@@ -1,6 +1,7 @@
 # Otoroshi
 
-![otoroshi](otoroshi.jpg "Otoroshi - Lance Red illustration")
+<img src="otoroshi.jpg" alt="otoroshi" title="Otoroshi - Lance Red illustration" width="240"/>
+
 > -- <cite>Illustration from [Lance Red](https://lancered_illustration.artstation.com/)</cite>
 
 Otoroshis are legendary creatures in Japanese folklore and mythology. They act as guardian of holy temples.
