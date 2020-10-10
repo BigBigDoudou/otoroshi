@@ -2,11 +2,6 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 2.6.6
   DisplayCopNames: true
-  Exclude:
-    - Rakefile
-    - cache/**/*
-    - bin/**/*
-    - spec/dummy/**/*
 
 Metrics/BlockLength:
   Exclude:
@@ -58,9 +53,6 @@ Style/Documentation:
   Enabled: true
   Exclude:
     - 'spec/**/*'
-    - 'test/**/*'
-    - 'lib/dirty_seed/engine.rb'
-    - 'lib/dirty_seed.rb'
 
 # Checks for missing documentation comment for public methods.
 Style/DocumentationMethod:
