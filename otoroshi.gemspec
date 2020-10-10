@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name                  = 'otoroshi'
-  s.version               = '0.0.1'
+  s.version               = '0.0.2'
   s.required_ruby_version = '>= 2.6'
   s.date                  = '2020-10-10'
   s.summary               = 'Otoroshi'
