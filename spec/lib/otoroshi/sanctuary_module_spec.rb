@@ -1,19 +1,42 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+SimpleCov.start
+
 require './lib/otoroshi/sanctuary'
 
 describe Otoroshi::Sanctuary do
-  let(:monkey) { Class.new(Otoroshi::Sanctuary) }
+  let(:monkey) { Class.new.include(described_class) }
+
+  describe '#initialize' do
+    context 'when no properties are set' do
+      context 'when no arguments are provided' do
+        it 'initializes an instance' do
+          expect(monkey.new).to be_a monkey
+        end
+      end
+
+      context 'when arguments are provided' do
+        it 'raises an error' do
+          expect { monkey.new(42) }.to raise_error ArgumentError
+          expect { monkey.new(foo: 42) }.to raise_error ArgumentError
+        end
+      end
+    end
+
+    context 'when #initialize is overrided' do
+    end
+  end
 
   describe '::property(name, type, :validate, :allow_nil, :default)' do
     describe 'name (Symbol, required)' do
       it 'defines a getter' do
-        monkey.property(:foo)
+        monkey.property(:foo, allow_nil: true)
         expect(monkey.new).to respond_to(:foo)
       end
 
       it 'defines a setter' do
-        monkey.property(:foo)
+        monkey.property(:foo, allow_nil: true)
         expect(monkey.new).to respond_to(:foo=)
       end
     end
@@ -139,14 +162,14 @@ describe Otoroshi::Sanctuary do
           end
         end
 
-        context 'when value is explicitely set to nil on initialization' do
+        context 'when value is explicitely initialized with nil' do
           it 'does not use the default value' do
             monkey.property(:foo, Integer, default: 0, allow_nil: true)
             expect(monkey.new(foo: nil).foo).to eq nil
           end
         end
 
-        context 'when value is explicitely set to nil on update' do
+        context 'when value is explicitely assigned to nil' do
           it 'does not use the default value' do
             monkey.property(:foo, Integer, default: 0, allow_nil: true)
             instance = monkey.new(foo: 42)
@@ -168,16 +191,20 @@ describe Otoroshi::Sanctuary do
     context 'when there is one property' do
       it 'returns a list containing the property' do
         monkey.property(:foo)
-        expect(monkey.properties).to eq [:foo]
+        expect(monkey.properties).to eq({ foo: { allow_nil: false, default: nil } })
       end
     end
 
     context 'when there is multiple properties' do
       it 'returns a list containing all properties' do
         monkey.property(:foo)
-        monkey.property(:bar)
-        monkey.property(:zed)
-        expect(monkey.properties).to match_array(%i[foo bar zed])
+        monkey.property(:bar, allow_nil: true, default: 0)
+        expect(monkey.properties).to eq(
+          {
+            foo: { allow_nil: false, default: nil },
+            bar: { allow_nil: true, default: 0 }
+          }
+        )
       end
     end
   end

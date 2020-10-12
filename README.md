@@ -2,7 +2,7 @@
 
 Otoroshis are legendary creatures in Japanese folklore and mythology. They act as guardian of holy temples.
 
-The Otoroshi gem bring the `Sanctuary` class. Inherits from this class to easily define arguments validation.
+The Otoroshi gem bring the `Sanctuary` class. include `Otoroshi::Sanctuary` to easily define arguments validation.
 
 ## Define a new property
 
@@ -16,7 +16,9 @@ Use the `::property(name, type, options)` method.
   * `default`: the default value for this property (should match the required type, `nil` by default)
 
 ```ruby
-class Importer < Otoroshi::Sanctuary
+class Importer
+  include Otoroshi::Sanctuary
+
   property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
   property :headers, [TrueClass, FalseClass], default: false
   property :col_sep, String, default: ','
@@ -34,7 +36,9 @@ end
 Getter and a setter are set for each property:
 
 ```ruby
-class Example < Otoroshi::Sanctuary
+class Example
+  include Otoroshi::Sanctuary
+
   property :foo, Integer
   property :bar, String
 end
@@ -51,10 +55,12 @@ instance.foo # 7
 instance.bar # world
 ```
 
-Validations run on initialization and setting:
+Validations run on initialization and assignment:
 
 ```ruby
-class Example < Otoroshi::Sanctuary
+class Example
+  include Otoroshi::Sanctuary
+
   property :foo, Integer, ->(v) { v > 0 }
 end
 
@@ -71,11 +77,14 @@ instance.foo = -1 # => ArgumentError, "foo does not match validation"
 Set `allow_nil` to `true` if `nil` is allowed:
 
 ```ruby
-class Example < Otoroshi::Sanctuary
+class Example
+  include Otoroshi::Sanctuary
+
   property :foo, Integer, ->(v) { v > 0 }, allow_nil: true
 end
 
 instance = Import.new # no error
+instance.foo # nil
 
 instance.foo = 42
 instance.foo = nil  # no error
@@ -84,7 +93,9 @@ instance.foo = nil  # no error
 Set `default` to the default value. You can always set the value to `nil` if `allow_nil` is `true`.
 
 ```ruby
-class Example < Otoroshi::Sanctuary
+class Example
+  include Otoroshi::Sanctuary
+
   property :foo, Integer, ->(v) { v > 0 }, default: 1, allow_nil: true
 end
 

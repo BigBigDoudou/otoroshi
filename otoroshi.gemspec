@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.6'
   s.date                  = '2020-10-10'
   s.summary               = 'Otoroshi'
-  s.description           = 'Help setting and validating instance arguments'
+  s.description           = 'Help defining class properties'
   s.authors               = ['Edouard Piron']
   s.email                 = 'ed.piron@gmail.com'
   s.files                 = ['lib/otoroshi/sanctuary.rb']
