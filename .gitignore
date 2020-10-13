@@ -1,4 +1,5 @@
 /coverage/*
 !/coverage/.keep
 
-.yardoc
+# .yardoc
+# /doc/*
