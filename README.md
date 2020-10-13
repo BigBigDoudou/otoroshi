@@ -1,8 +1,8 @@
 # Otoroshi
 
-![otoroshi](./otoroshi.jpg "Suushi Otoroshi - Stuart Rankin")
+![otoroshi](https://upload.wikimedia.org/wikipedia/commons/4/41/Suushi_Otoroshi.jpg "Sawaki Suushi")
 
-> -- <cite>Illustration from Stuart Rankin (CC)</cite>
+> -- <cite>Illustration from Sawaki Suushi, 1737</cite>
 
 Otoroshis are legendary creatures in Japanese folklore and mythology. They act as guardian of holy temples.
 
