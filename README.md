@@ -10,6 +10,8 @@ The `otoroshi` gem helps you defining and validating class properties.
 
 See [an example of refactor](#refactor-example) with Otoroshi.
 
+Please refer to [the complete documentation](https://htmlpreview.github.io/?https://github.com/BigBigDoudou/otoroshi/blob/main/doc/index.html) for more information.
+
 ## Installation
 
 Add this line to your application's Gemfile:
