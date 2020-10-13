@@ -6,6 +6,10 @@
 
 Otoroshis are legendary creatures in Japanese folklore and mythology. They act as guardian of holy temples.
 
+The `otoroshi` gem helps you defining and validating class properties.
+
+See [an example of refactor](#refactor-example) with Otoroshi.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -39,23 +43,6 @@ Use the `::property(name, type, options)` method to add a property.
   * `allow_nil`: define if the future value can be set to nil (boolean, `false` by default)
   * `default`: the default value for this property (should match the required type, `nil` by default)
 
-```ruby
-class Importer
-  include Otoroshi::Sanctuary
-
-  property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
-  property :headers, [TrueClass, FalseClass], default: false
-  property :col_sep, String, default: ','
-  property :converters, Symbol, validate: ->(v) { v.in? %i[integer float date] }, allow_nil: true
-
-  def call
-    csv = CSV.parse(file_path, headers: headers, col_sep: col_sep, converters: converters)
-    csv.each do |row|
-      # ...
-    end
-  end
-end
-```
 
 Getters and a setters are automatically set:
 
@@ -137,7 +124,7 @@ Example.new(foo: -1) # => ArgumentError, "foo does not match validation"
 instance.foo = -1 # => ArgumentError, "foo does not match validation"
 ```
 
-Set `allow_nil` to `true` if `nil` is authorized:
+Set `allow_nil:` option to `true` if `nil` is authorized:
 
 ```ruby
 class Example
@@ -152,9 +139,10 @@ instance.foo # nil
 instance.foo = 42
 instance.foo = nil
 instance.foo # nil
+instance.foo = -1 # => ArgumentError, "foo does not match validation"
 ```
 
-Set `default` to the default value. You can always set the value to `nil` if `allow_nil` is `true`.
+Set `default:` option to the default value. You can always set the value to `nil` if `allow_nil` is `true`.
 
 ```ruby
 class Example
@@ -171,4 +159,66 @@ instance.foo # nil
 
 instance.foo = nil  # no error
 instance.foo # nil
+```
+
+## Refactor Example
+
+### Before refactor (23 lines / 765 characters dedicated to properties)
+
+```ruby
+class Importer
+  attr_reader :file_path, :headers, :col_sep, :converters
+
+  def initialize(file_path:, headers: false, col_sep: ',', converters: nil)
+    self.file_path = file_path
+    self.headers = headers
+    self.col_sep = col_sep
+    self.converters = converters
+  end
+
+  private
+
+  # private business methods...
+
+  def file_path=(value)
+    raise ArgumentError unless value.is_?(String) && value.match?(/.+\.csv/)
+
+    @file_path = value
+  end
+
+  def headers=(value)
+    raise ArgumentError unless [true, false].include?(value)
+
+    @headers = value
+  end
+
+  def col_sep=(value)
+    raise ArgumentError unless value.is_?(String) && value.in?([',', ';', '\s', '\t', '|'])
+
+    @col_sep = value
+  end
+
+  def converters=(value)
+    raise ArgumentError unless value.is_?(Symbol) && value.in?(%i[integer float date])
+
+    @converters = value
+  end
+end
+```
+
+### After refactor with Otoroshi (5 lines / 351 characters dedicated to properties)
+
+```ruby
+class Importer
+  include Otoroshi::Sanctuary
+
+  property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
+  property :headers, [TrueClass, FalseClass], default: false
+  property :col_sep, String, validate: ->(v) { v.in? [',', ';', '\s', '\t', '|'] }, default: ','
+  property :converters, Symbol, validate: ->(v) { v.in? %i[integer float date] }, allow_nil: true
+
+  private
+
+  # private business methods...
+end
 ```
