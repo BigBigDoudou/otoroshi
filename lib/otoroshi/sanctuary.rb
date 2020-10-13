@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 module Otoroshi
-  # Help setting and validating instance arguments
+  # Add the ::property helper to the class
   module Sanctuary
-    # Initialize an instance
-    # This method will be redefined each time a property is added to the class
-    def initialize; end
-
     class << self
-      # Extend class method to the included class
+      # Extend class method to the class
       def included(base)
         base.extend ClassMethods
       end
@@ -16,14 +12,18 @@ module Otoroshi
 
     # Define class methods
     module ClassMethods
-      # Add a new property to the class
-      # -------------------------------
+      # Adds a new property to the class
       #
-      # / Examples
-      #
-      # property name, type: String, validate: ->(v) { v.length > 3 }, allow_nil: true
-      # property score, type: Integer, validate: ->(v) { v >= 0 }, default: 0
-      #
+      # @param name [Symbol] the property name
+      # @param type [Class] the expected value type
+      # @param validate [Proc] a lambda processing the value and returning true or false
+      # @param allow_nil [true, false] allow nil as a value
+      # @param default [Object, nil] default value if not set on initialization
+      # @return [nil]
+      # @example
+      #   property name, type: String, validate: ->(v) { v.length > 3 }, allow_nil: true
+      # @example
+      #   property score, type: Integer, validate: ->(v) { v >= 0 }, default: 0
       def property(name, type = Object, validate: ->(_) { true }, allow_nil: false, default: nil)
         add_to_properties(name, allow_nil, default)
         define_validate_type!(name, type, allow_nil)
