@@ -3,6 +3,7 @@
 module Otoroshi
   # This module is designed to be included in a class. This will provide
   # the "property" ({Sanctuary::ClassMethods.property}) method for defining class properties.
+  #
   # @example
   #   class Importer
   #     include Otoroshi::Sanctuary
@@ -23,12 +24,15 @@ module Otoroshi
     # Class methods extended for the base class
     module ClassMethods
       # Adds a new "property" to the class
+      #
       # @param name [Symbol] the property name
       # @param type [Class] the expected value type
       # @param validate [Proc] a lambda processing the value and returning true or false
       # @param allow_nil [true, false] allow nil as a value
       # @param default [Object] default value if not set on initialization
+      #
       # @return [void]
+      #
       # @example
       #   property name, type: String, validate: ->(v) { v.length > 3 }, allow_nil: true
       # @example
@@ -43,7 +47,9 @@ module Otoroshi
       end
 
       # Returns the class properties
+      #
       # @return [Hash]
+      #
       # @note this method will be updated by {add_to_properties}
       def properties
         {}
@@ -52,6 +58,7 @@ module Otoroshi
       private
 
       # Updates {properties} to add new property to the returned ones
+      #
       # @return [void]
       def add_to_properties(name, allow_nil, default)
         current_state = properties
@@ -60,10 +67,13 @@ module Otoroshi
       end
 
       # Defines a private method that raises an error if type is not respected
+      #
       # @param name [Symbol] the property name
       # @param type [Class] the type to test against
       # @param allow_nil [true, false] allow nil as a value
+      #
       # @return [void]
+      #
       # @example
       #   define_validate_type!(score, Integer, false) => def validate_score_type!(value) ...
       # @example Generated method
@@ -85,8 +95,11 @@ module Otoroshi
       end
 
       # Defines a lambda to be call to validate that value matches the type
+      #
       # @param type [Class] the type to test against
+      #
       # @return [Proc] the lambda to use in order to test the value matches the type
+      #
       # @example
       #   type_validation(Integer) #=> ->(v) { v.is_a? Integer }
       # @example
@@ -100,10 +113,13 @@ module Otoroshi
       end
 
       # Defines a private method that raises an error if validate block returns false
+      #
       # @param name [Symbol] the property name
       # @param validate [Proc] a lambda processing the value and returning true or false
       # @param allow_nil [true, false] allow nil as a value
+      #
       # @return [void]
+      #
       # @example
       #   define_validate_lambda!("score", ->(v) { v >= 0 }, false) #=> def validate_score_lambda!(value) ...
       # @example Generated instance method
@@ -124,8 +140,11 @@ module Otoroshi
       end
 
       # Defines a getter method for the property
+      #
       # @param name [Symbol] the property name
+      #
       # @return [void]
+      #
       # @example
       #   define_getter(:score) #=> def score ...
       # @example Generated instance method
@@ -137,8 +156,11 @@ module Otoroshi
       end
 
       # Defines a setter method for the property
+      #
       # @param name [Symbol] the property name
+      #
       # @return [void]
+      #
       # @example
       #   define_getter(:score) #=> def score=(value) ...
       # @example Generated instance method
@@ -156,8 +178,11 @@ module Otoroshi
       end
 
       # Redefines initialize method
+      #
       # @return [void]
+      #
       # @note method is defined with `class_eval`
+      #
       # @example Generated method
       #   def initialize(foo:, bar: 0)
       #     self.foo = foo
@@ -172,7 +197,9 @@ module Otoroshi
       end
 
       # Defines initialize method parameters
+      #
       # @return [String]
+      #
       # @example Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }
       #   redefine_initialize #=> "foo:, bar: 0"
       def initialize_parameters
@@ -185,8 +212,11 @@ module Otoroshi
       end
 
       # Defines the default value of a parameter depending on options
+      #
       # @param options [Hash]
+      #
       # @return [String]
+      #
       # @example when nil is allowed and default is set
       #   default_parameter_for(true, 0) #=> " 0"
       # @example when nil is allowed and default is not set
@@ -200,7 +230,9 @@ module Otoroshi
       end
 
       # Defines initialize method body
+      #
       # @return [String]
+      #
       # @example Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }
       #   initialize_body #=> "self.foo = foo\nself.bar = bar"
       def initialize_body
