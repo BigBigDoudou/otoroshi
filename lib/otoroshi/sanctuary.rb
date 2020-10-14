@@ -27,6 +27,7 @@ module Otoroshi
       #
       # @param name [Symbol] the property name
       # @param type [Class] the expected value type
+      # @param one_of [Array] the accepted values
       # @param validate [Proc] a lambda processing the value and returning true or false
       # @param allow_nil [true, false] allow nil as a value
       # @param default [Object] default value if not set on initialization
@@ -37,9 +38,18 @@ module Otoroshi
       #   property name, type: String, validate: ->(v) { v.length > 3 }, allow_nil: true
       # @example
       #   property score, type: Integer, validate: ->(v) { v >= 0 }, default: 0
-      def property(name, type = Object, validate: ->(_) { true }, allow_nil: false, default: nil)
+      def property( # rubocop:disable Metrics/ParameterLists
+        name,
+        type = Object,
+        elt: Object,
+        one_of: nil,
+        validate: ->(_) { true },
+        allow_nil: false,
+        default: nil
+      )
         add_to_properties(name, allow_nil, default)
-        define_validate_type!(name, type, allow_nil)
+        define_validate_type!(name, type, elt, allow_nil)
+        define_validate_inclusion!(name, one_of, allow_nil)
         define_validate_lambda!(name, validate, allow_nil)
         define_getter(name)
         define_setter(name)
@@ -83,10 +93,10 @@ module Otoroshi
       #
       #     raise ArgumentError, ":score does not match required type"
       #   end
-      def define_validate_type!(name, type, allow_nil)
-        lambda = type_validation(type)
+      def define_validate_type!(name, type, elt, allow_nil)
+        lambda = type_validation(type, elt)
         define_method :"validate_#{name}_type!" do |value|
-          return if type.nil? || allow_nil && value.nil?
+          return if allow_nil && value.nil?
           return if lambda.call(value)
 
           raise ArgumentError, ":#{name} does not match required type"
@@ -104,12 +114,47 @@ module Otoroshi
       #   type_validation(Integer) #=> ->(v) { v.is_a? Integer }
       # @example
       #   type_validation([String, Symbol]) #=> ->(v) { [String, Symbol].any? { |t| v.is_a? t } }
-      def type_validation(type)
+      def type_validation(type, elt)
         if type.is_a? Array
+          # validate each type
           ->(v) { type.any? { |t| v.is_a? t } }
+        elsif type == Array
+          # validate array elements type
+          ->(v) { v.is_a?(Array) && v.all? { |e| e.is_a? elt } }
         else
           ->(v) { v.is_a? type }
         end
+      end
+
+      # Defines a private method that raises an error if value is not included in the accepted ones
+      #
+      # @param name [Symbol] the property name
+      # @param accepted_values [Array, nil] the values to test against
+      # @param allow_nil [true, false] allow nil as a value
+      #
+      # @return [void]
+      #
+      # @example
+      #   define_validate_inclusion!(side, [:left, :right], false) => def validate_side_type!(value) ...
+      # @example Generated method
+      #   def validate_side_type!(value)
+      #     return if false && value.nil?
+      #     return if [:left, :right].include? value
+      #
+      #     raise ArgumentError, ":side is not included in accepted values"
+      #   end
+      def define_validate_inclusion!(name, accepted_values, allow_nil)
+        if accepted_values
+          define_method(:"validate_#{name}_inclusion!") do |value|
+            return if allow_nil && value.nil?
+            return if accepted_values.include? value
+
+            raise ArgumentError, ":#{name} is not included in accepted values"
+          end
+        else
+          define_method(:"validate_#{name}_inclusion!") { |_| }
+        end
+        private :"validate_#{name}_inclusion!"
       end
 
       # Defines a private method that raises an error if validate block returns false
@@ -172,6 +217,7 @@ module Otoroshi
       def define_setter(name)
         define_method :"#{name}=" do |value|
           __send__(:"validate_#{name}_type!", value)
+          __send__(:"validate_#{name}_inclusion!", value)
           __send__(:"validate_#{name}_lambda!", value)
           instance_variable_set("@#{name}", value)
         end

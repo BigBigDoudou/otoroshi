@@ -23,9 +23,6 @@ describe Otoroshi::Sanctuary do
         end
       end
     end
-
-    context 'when #initialize is overrided' do
-    end
   end
 
   describe '::property(name, type, :validate, :allow_nil, :default)' do
@@ -70,6 +67,44 @@ describe Otoroshi::Sanctuary do
         end
       end
 
+      context 'when :type == Array' do
+        context 'when values is an Array' do
+          context 'when elt is not defined' do
+            before { monkey.property(:foo, Array) }
+
+            it 'sets the value' do
+              expect { monkey.new(foo: [1, 2, 3]) }.not_to raise_error
+              instance = monkey.new(foo: [1, 2, 3])
+              expect { instance.foo = [4, 5] }.not_to raise_error
+              expect { instance.foo = [] }.not_to raise_error
+            end
+          end
+
+          context 'when elt is defined' do
+            before { monkey.property(:foo, Array, elt: Integer) }
+
+            context 'when each element of the array matches the elt' do
+              it 'sets the value' do
+                expect { monkey.new(foo: [1, 2, 3]) }.not_to raise_error
+                instance = monkey.new(foo: [1, 2, 3])
+                expect { instance.foo = [4, 5] }.not_to raise_error
+                expect { instance.foo = [] }.not_to raise_error
+              end
+            end
+
+            context 'when at least one element of the array does not match the elt' do
+              it 'raises an error' do
+                expect { monkey.new(foo: []) }.not_to raise_error
+                expect { monkey.new(foo: [1, 1.5]) }.to raise_error ArgumentError
+                instance = monkey.new(foo: [1, 2, 3])
+                expect { instance.foo = [] }.not_to raise_error
+                expect { instance.foo = [1, 1.5] }.to raise_error ArgumentError
+              end
+            end
+          end
+        end
+      end
+
       context 'when :type is an array' do
         before { monkey.property(:foo, [Symbol, String]) }
         let(:instance) { monkey.new(foo: :hello) }
@@ -102,6 +137,28 @@ describe Otoroshi::Sanctuary do
           expect(monkey.new(foo: child.new)).to be_a monkey
           monkey.property(:bar, child)
           expect { monkey.new(foo: parent.new) }.to raise_error ArgumentError
+        end
+      end
+    end
+
+    describe ':one_of (array of values)' do
+      context 'when :one_of is not set' do
+        it 'does not validate value inclusion' do
+          monkey.property(:foo)
+          expect { monkey.new(foo: :bar) }.not_to raise_error
+        end
+      end
+
+      context 'when :one_of is set' do
+        it 'validates that value is included in the accepted ones' do
+          monkey.property(:foo, one_of: %i[apple pear])
+          # initialize
+          expect { monkey.new(foo: :apple) }.not_to raise_error
+          expect { monkey.new(foo: :banana) }.to raise_error ArgumentError
+          # set
+          instance = monkey.new(foo: :apple)
+          expect { instance.foo = :pear }.not_to raise_error
+          expect { instance.foo = :banana }.to raise_error ArgumentError
         end
       end
     end
