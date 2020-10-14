@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description           = 'Help defining class properties'
   s.authors               = ['Edouard Piron']
   s.email                 = 'ed.piron@gmail.com'
-  s.files                 = ['lib/otoroshi/sanctuary.rb']
+  s.files                 = Dir['{app,config,db,lib}/**/*']
   s.homepage              = 'https://rubygems.org/gems/otoroshi'
   s.license               = 'MIT'
 end

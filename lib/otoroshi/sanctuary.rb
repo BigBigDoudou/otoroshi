@@ -22,11 +22,12 @@ module Otoroshi
     end
 
     # Class methods extended for the base class
-    module ClassMethods
+    module ClassMethods # rubocop:disable Metrics/ModuleLength
       # Adds a new "property" to the class
       #
       # @param name [Symbol] the property name
       # @param type [Class] the expected value type
+      # @param array [true, false] expect value to be an array
       # @param one_of [Array] the accepted values
       # @param validate [Proc] a lambda processing the value and returning true or false
       # @param allow_nil [true, false] allow nil as a value
@@ -41,16 +42,16 @@ module Otoroshi
       def property( # rubocop:disable Metrics/ParameterLists
         name,
         type = Object,
-        elt: Object,
+        array: false,
         one_of: nil,
         validate: ->(_) { true },
         allow_nil: false,
         default: nil
       )
         add_to_properties(name, allow_nil, default)
-        define_validate_type!(name, type, elt, allow_nil)
-        define_validate_inclusion!(name, one_of, allow_nil)
-        define_validate_lambda!(name, validate, allow_nil)
+        define_validate_type!(name, type, array, allow_nil)
+        define_validate_inclusion!(name, array, one_of, allow_nil)
+        define_validate_specific!(name, array, validate, allow_nil)
         define_getter(name)
         define_setter(name)
         redefine_initialize
@@ -80,6 +81,7 @@ module Otoroshi
       #
       # @param name [Symbol] the property name
       # @param type [Class] the type to test against
+      # @param array [true, false] define if the value is an array
       # @param allow_nil [true, false] allow nil as a value
       #
       # @return [void]
@@ -93,35 +95,39 @@ module Otoroshi
       #
       #     raise ArgumentError, ":score does not match required type"
       #   end
-      def define_validate_type!(name, type, elt, allow_nil)
-        lambda = type_validation(type, elt)
+      def define_validate_type!(name, type, array, allow_nil)
+        lambda = type_validation(type, array: array)
         define_method :"validate_#{name}_type!" do |value|
           return if allow_nil && value.nil?
+
+          raise Otoroshi::WrongTypeError.new(name, Array) if array && !value.is_a?(Array)
           return if lambda.call(value)
 
-          raise ArgumentError, ":#{name} does not match required type"
+          raise Otoroshi::WrongTypeError.new(name, type, array: array)
         end
         private :"validate_#{name}_type!"
       end
 
-      # Defines a lambda to be call to validate that value matches the type
+      # Defines a lambda to be called to validate that value matches the type
       #
       # @param type [Class] the type to test against
+      # @param array [true, false] define if the value is an array
       #
-      # @return [Proc] the lambda to use in order to test the value matches the type
+      # @return [Proc] the lambda to use in order to test that the value matches the type
       #
       # @example
       #   type_validation(Integer) #=> ->(v) { v.is_a? Integer }
       # @example
       #   type_validation([String, Symbol]) #=> ->(v) { [String, Symbol].any? { |t| v.is_a? t } }
-      def type_validation(type, elt)
-        if type.is_a? Array
-          # validate each type
+      def type_validation(type, array: false)
+        if array
+          # validate value is an array then apply the lambda on each element
+          ->(v) { v.all? { |e| type_validation(type).call(e) } }
+        elsif type.is_a? Array
+          # check the value matches one of the types
           ->(v) { type.any? { |t| v.is_a? t } }
-        elsif type == Array
-          # validate array elements type
-          ->(v) { v.is_a?(Array) && v.all? { |e| e.is_a? elt } }
         else
+          # check the value matches the type
           ->(v) { v.is_a? type }
         end
       end
@@ -129,6 +135,7 @@ module Otoroshi
       # Defines a private method that raises an error if value is not included in the accepted ones
       #
       # @param name [Symbol] the property name
+      # @param array [true, false] define if the value is an array
       # @param accepted_values [Array, nil] the values to test against
       # @param allow_nil [true, false] allow nil as a value
       #
@@ -143,18 +150,61 @@ module Otoroshi
       #
       #     raise ArgumentError, ":side is not included in accepted values"
       #   end
-      def define_validate_inclusion!(name, accepted_values, allow_nil)
+      def define_validate_inclusion!(name, array, accepted_values, allow_nil)
+        lambda = validate_inclusion_lambda(name, array, accepted_values)
         if accepted_values
           define_method(:"validate_#{name}_inclusion!") do |value|
             return if allow_nil && value.nil?
-            return if accepted_values.include? value
 
-            raise ArgumentError, ":#{name} is not included in accepted values"
+            lambda.call(value)
           end
         else
           define_method(:"validate_#{name}_inclusion!") { |_| }
         end
         private :"validate_#{name}_inclusion!"
+      end
+
+      # Chooses which method to call depending on the value of "array"
+      #
+      # @param name [Symbol] the property name
+      # @param array [true, false] define if the value is an array
+      # @param accepted_values [Array, nil] the values to test against
+      #
+      # @return [Proc] the lambda to use in order to test that value respects the one_of condition
+      def validate_inclusion_lambda(name, array, accepted_values)
+        if array
+          validate_each_inclusion(name, accepted_values)
+        else
+          validate_inclusion(name, accepted_values)
+        end
+      end
+
+      # Defines a lambda to be called to validate that value is included in accepted ones
+      #
+      # @param name [Symbol] the property name
+      # @param accepted_values [Array, nil] the values to test against
+      #
+      # @return [Proc] the lambda to use in order to test that value is included in accepted ones
+      def validate_inclusion(name, accepted_values)
+        lambda do |value|
+          return if accepted_values.include?(value)
+
+          raise Otoroshi::NotAccepted.new(name, accepted_values)
+        end
+      end
+
+      # Defines a lambda to be called to validate that each value is included in accepted ones
+      #
+      # @param name [Symbol] the property name
+      # @param accepted_values [Array, nil] the values to test against
+      #
+      # @return [Proc] the lambda to use in order to test that each value is included in accepted ones
+      def validate_each_inclusion(name, accepted_values)
+        lambda do |value|
+          return if value.all? { |e| accepted_values.include? e }
+
+          raise Otoroshi::NotAccepted.new(name, accepted_values, array: true)
+        end
       end
 
       # Defines a private method that raises an error if validate block returns false
@@ -166,7 +216,7 @@ module Otoroshi
       # @return [void]
       #
       # @example
-      #   define_validate_lambda!("score", ->(v) { v >= 0 }, false) #=> def validate_score_lambda!(value) ...
+      #   define_validate_specific!("score", ->(v) { v >= 0 }, false) #=> def validate_score_lambda!(value) ...
       # @example Generated instance method
       #   def validate_score_lambda!(value)
       #     return if false && value.nil?
@@ -174,14 +224,57 @@ module Otoroshi
       #
       #     raise ArgumentError, ":score does not match validation"
       #   end
-      def define_validate_lambda!(name, validate, allow_nil)
+      def define_validate_specific!(name, array, validate, allow_nil)
+        lambda = validate_specific_lambda(name, array, validate)
         define_method :"validate_#{name}_lambda!" do |value|
           return if allow_nil && value.nil?
-          return if instance_exec(value, &validate)
 
-          raise ArgumentError, ":#{name} does not match validation"
+          lambda.call(value)
         end
         private :"validate_#{name}_lambda!"
+      end
+
+      # Chooses which method to call depending on the value of "array"
+      #
+      # @param name [Symbol] the property name
+      # @param array [true, false] define if the value is an array
+      # @param validate [Proc] a lambda processing the value and returning true or false
+      #
+      # @return [Proc] the lambda to use in order to test that value respects the specific condition
+      def validate_specific_lambda(name, array, validate)
+        if array
+          validate_each_specific(name, validate)
+        else
+          validate_specific(name, validate)
+        end
+      end
+
+      # Defines a lambda to be called to validate that value respects the specific
+      #
+      # @param name [Symbol] the property name
+      # @param validate [Proc] a lambda processing the value and returning true or false
+      #
+      # @return [Proc] the lambda to use in order to test that value respects the specific
+      def validate_specific(name, validate)
+        lambda do |value|
+          return if instance_exec(value, &validate)
+
+          raise Otoroshi::SpecificFailure, name
+        end
+      end
+
+      # Defines a lambda to be called to validate that value respects the specific
+      #
+      # @param name [Symbol] the property name
+      # @param validate [Proc] a lambda processing the value and returning true or false
+      #
+      # @return [Proc] the lambda to use in order to test that each value respects the specific
+      def validate_each_specific(name, validate)
+        lambda do |value|
+          return if value.all? { |e| instance_exec(e, &validate) }
+
+          raise Otoroshi::SpecificFailure.new(name, array: true)
+        end
       end
 
       # Defines a getter method for the property

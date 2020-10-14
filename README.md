@@ -39,10 +39,11 @@ Use the `::property(name, type, options)` method to add a property.
 * `name`: name of the property (symbol or string)
 * `type`: the class the future value should belongs to (class or array of classes, `Object` by default)
 * options:
+  * `array`: define if the expected value should be an array (boolean, `false` by default)
+  * `one_of`: a list of accepted value (array, `nil` by default)
   * `validate`: a custom validation to apply to the future value (lambda, `->(_) { true }` by default)
   * `allow_nil`: define if the future value can be set to nil (boolean, `false` by default)
   * `default`: the default value for this property (should match the required type, `nil` by default)
-
 
 Getters and a setters are automatically set:
 
@@ -75,7 +76,7 @@ class Example
   property :foo, Integer
 end
 
-Example.new # => ArgumentError, "foo does not match required type"
+Example.new # => ArgumentError, "foo is not an instance "
 Example.new(foo: 1.5) # => ArgumentError, "foo does not match required type"
 
 instance.foo = nil # => ArgumentError, "foo does not match required type"
@@ -116,7 +117,7 @@ You can add custom validations with the `validate:` option.
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer, ->(v) { v > 0 }
+  property :foo, Integer, validate: ->(v) { v > 0 }
 end
 
 Example.new(foo: -1) # => ArgumentError, "foo does not match validation"
@@ -130,7 +131,7 @@ Set `allow_nil:` option to `true` if `nil` is authorized:
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer, ->(v) { v > 0 }, allow_nil: true
+  property :foo, Integer, validate: ->(v) { v > 0 }, allow_nil: true
 end
 
 instance = Example.new
@@ -148,7 +149,7 @@ Set `default:` option to the default value. You can always set the value to `nil
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer, ->(v) { v > 0 }, default: 1, allow_nil: true
+  property :foo, Integer, validate: ->(v) { v > 0 }, default: 1, allow_nil: true
 end
 
 instance = Example.new # no error
@@ -159,6 +160,24 @@ instance.foo # nil
 
 instance.foo = nil  # no error
 instance.foo # nil
+```
+
+Set `array:` to `true` to apply the validations on each element (the `allow_nil` concerns the array itself, not each `element` of it):
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :foo, Integer, validate: ->(v) { v > 0 }, default: [], allow_nil: true
+end
+
+instance = Example.new # no error
+instance.foo # []
+
+instance = Example.new(foo: []) # no error
+instance = Example.new(foo: [1, 2]) # no error
+
+instance = Example.new(foo: [1, 1.5]) # ArgumentError, "foo does not match required type"
 ```
 
 ## Refactor Example
