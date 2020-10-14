@@ -153,11 +153,11 @@ describe Otoroshi::Sanctuary do
           monkey.property(:foo, one_of: [:apple, :pear])
           # initialize
           expect { monkey.new(foo: :apple) }.not_to raise_error
-          expect { monkey.new(foo: :banana) }.to raise_error Otoroshi::NotAccepted, ':foo is not included in [apple, pear]'
+          expect { monkey.new(foo: :banana) }.to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [apple, pear]'
           # set
           instance = monkey.new(foo: :apple)
           expect { instance.foo = :pear }.not_to raise_error
-          expect { instance.foo = :banana }.to raise_error Otoroshi::NotAccepted, ':foo is not included in [apple, pear]'
+          expect { instance.foo = :banana }.to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [apple, pear]'
         end
 
         context 'when :array is true' do
@@ -166,12 +166,12 @@ describe Otoroshi::Sanctuary do
             # initialize
             expect { monkey.new(foo: []) }.not_to raise_error
             expect { monkey.new(foo: [:apple, :pear]) }.not_to raise_error
-            expect { monkey.new(foo: [:apple, :banana]) }.to raise_error Otoroshi::NotAccepted, ':foo contains elements that are not included in [apple, pear]'
+            expect { monkey.new(foo: [:apple, :banana]) }.to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [apple, pear]'
             # set
             instance = monkey.new(foo: [:apple])
             expect { instance.foo = [] }.not_to raise_error
             expect { instance.foo = [:apple, :pear] }.not_to raise_error
-            expect { instance.foo = [:apple, :banana] }.to raise_error Otoroshi::NotAccepted, ':foo contains elements that are not included in [apple, pear]'
+            expect { instance.foo = [:apple, :banana] }.to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [apple, pear]'
           end
         end
       end
@@ -191,11 +191,11 @@ describe Otoroshi::Sanctuary do
           monkey.property(:foo, Integer, validate: ->(v) { v > 0 })
           # initialize
           expect { monkey.new(foo: 1) }.not_to raise_error
-          expect { monkey.new(foo: -1) }.to raise_error Otoroshi::SpecificFailure, ':foo does not pass specific validation'
+          expect { monkey.new(foo: -1) }.to raise_error Otoroshi::SpecificValidationError, ':foo does not pass specific validation'
           # set
           instance = monkey.new(foo: 42)
           expect { instance.foo = 7 }.not_to raise_error
-          expect { instance.foo = -7 }.to raise_error Otoroshi::SpecificFailure, ':foo does not pass specific validation'
+          expect { instance.foo = -7 }.to raise_error Otoroshi::SpecificValidationError, ':foo does not pass specific validation'
         end
       end
 
@@ -205,12 +205,12 @@ describe Otoroshi::Sanctuary do
           # initialize
           expect { monkey.new(foo: []) }.not_to raise_error
           expect { monkey.new(foo: [1, 2]) }.not_to raise_error
-          expect { monkey.new(foo: [1, -1]) }.to raise_error Otoroshi::SpecificFailure, ':foo contains elements that do not pass specific validation'
+          expect { monkey.new(foo: [1, -1]) }.to raise_error Otoroshi::SpecificValidationError, ':foo contains elements that do not pass specific validation'
           # set
           instance = monkey.new(foo: [42])
           expect { instance.foo = [] }.not_to raise_error
           expect { instance.foo = [1, 2] }.not_to raise_error
-          expect { instance.foo = [1, -1] }.to raise_error Otoroshi::SpecificFailure, ':foo contains elements that do not pass specific validation'
+          expect { instance.foo = [1, -1] }.to raise_error Otoroshi::SpecificValidationError, ':foo contains elements that do not pass specific validation'
         end
       end
     end

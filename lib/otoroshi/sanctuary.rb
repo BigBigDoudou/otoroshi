@@ -189,7 +189,7 @@ module Otoroshi
         lambda do |value|
           return if accepted_values.include?(value)
 
-          raise Otoroshi::NotAccepted.new(name, accepted_values)
+          raise Otoroshi::NotAcceptedError.new(name, accepted_values)
         end
       end
 
@@ -203,7 +203,7 @@ module Otoroshi
         lambda do |value|
           return if value.all? { |e| accepted_values.include? e }
 
-          raise Otoroshi::NotAccepted.new(name, accepted_values, array: true)
+          raise Otoroshi::NotAcceptedError.new(name, accepted_values, array: true)
         end
       end
 
@@ -259,7 +259,7 @@ module Otoroshi
         lambda do |value|
           return if instance_exec(value, &validate)
 
-          raise Otoroshi::SpecificFailure, name
+          raise Otoroshi::SpecificValidationError, name
         end
       end
 
@@ -273,7 +273,7 @@ module Otoroshi
         lambda do |value|
           return if value.all? { |e| instance_exec(e, &validate) }
 
-          raise Otoroshi::SpecificFailure.new(name, array: true)
+          raise Otoroshi::SpecificValidationError.new(name, array: true)
         end
       end
 

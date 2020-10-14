@@ -76,11 +76,11 @@ class Example
   property :foo, Integer
 end
 
-Example.new # => ArgumentError, "foo is not an instance "
-Example.new(foo: 1.5) # => ArgumentError, "foo does not match required type"
+Example.new # Otoroshi::WrontTypeError, :foo is not an instance of Integer
+Example.new(foo: 1.5) # Otoroshi::WrontTypeError, :foo is not an instance of Integer
 
-instance.foo = nil # => ArgumentError, "foo does not match required type"
-instance.foo = 1.5 # => ArgumentError, "foo does not match required type"
+instance.foo = nil # Otoroshi::WrontTypeError, :foo is not an instance of Integer
+instance.foo = 1.5 # Otoroshi::WrontTypeError, :foo is not an instance of Integer
 ```
 
 You can provide multiple authorized types:
@@ -111,6 +111,22 @@ Example.new(foo: 42)
 Example.new(foo: User.find(1))
 ```
 
+Use the `one_of` option to list accpeted values:
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :foo, one_of: [:apple, :pear]
+end
+
+Example.new(foo: :pear)
+Example.new(foo: :banana) # Otoroshi::NotAcceptedError, :foo is not included in [apple, pear]
+
+instance.foo = :pear
+instance.foo = :banana # Otoroshi::NotAcceptedError, :foo is not included in [apple, pear]
+```
+
 You can add custom validations with the `validate:` option.
 
 ```ruby
@@ -120,9 +136,9 @@ class Example
   property :foo, Integer, validate: ->(v) { v > 0 }
 end
 
-Example.new(foo: -1) # => ArgumentError, "foo does not match validation"
+Example.new(foo: -1) # Otoroshi::SpecificValidationError, :foo does not pass specific validation
 
-instance.foo = -1 # => ArgumentError, "foo does not match validation"
+instance.foo = -1 # Otoroshi::SpecificValidationError, :foo does not pass specific validation
 ```
 
 Set `allow_nil:` option to `true` if `nil` is authorized:
@@ -140,7 +156,7 @@ instance.foo # nil
 instance.foo = 42
 instance.foo = nil
 instance.foo # nil
-instance.foo = -1 # => ArgumentError, "foo does not match validation"
+instance.foo = -1 # Otoroshi::SpecificValidationError, :foo does not pass specific validation
 ```
 
 Set `default:` option to the default value. You can always set the value to `nil` if `allow_nil` is `true`.
@@ -152,17 +168,19 @@ class Example
   property :foo, Integer, validate: ->(v) { v > 0 }, default: 1, allow_nil: true
 end
 
-instance = Example.new # no error
+instance = Example.new
 instance.foo # 1
 
-instance = Example.new(foo: nil) # no error
+instance = Example.new(foo: nil)
 instance.foo # nil
 
-instance.foo = nil  # no error
+instance.foo = nil
 instance.foo # nil
 ```
 
-Set `array:` to `true` to apply the validations on each element (the `allow_nil` concerns the array itself, not each `element` of it):
+Set `array:` to `true` to apply the validations on each element.
+
+`allow_nil` and `default` still refer to the array, not the elements.
 
 ```ruby
 class Example
@@ -171,28 +189,29 @@ class Example
   property :foo, Integer, validate: ->(v) { v > 0 }, default: [], allow_nil: true
 end
 
-instance = Example.new # no error
+instance = Example.new
 instance.foo # []
 
-instance = Example.new(foo: []) # no error
-instance = Example.new(foo: [1, 2]) # no error
+instance = Example.new(foo: [])
+instance = Example.new(foo: [1, 2])
 
-instance = Example.new(foo: [1, 1.5]) # ArgumentError, "foo does not match required type"
+instance = Example.new(foo: [1, 1.5]) # Otoroshi::WrontTypeError, :foo contains elements that are not instances of Integer
 ```
 
 ## Refactor Example
 
-### Before refactor (23 lines / 765 characters dedicated to properties)
+### Before refactor (28 lines dedicated to properties)
 
 ```ruby
 class Importer
-  attr_reader :file_path, :headers, :col_sep, :converters
+  attr_reader :file_path, :headers, :col_sep, :converters, :column_names
 
-  def initialize(file_path:, headers: false, col_sep: ',', converters: nil)
+  def initialize(file_path:, headers: false, col_sep: ',', converters: nil, column_names: [])
     self.file_path = file_path
     self.headers = headers
     self.col_sep = col_sep
     self.converters = converters
+    self.column_names = column_names
   end
 
   private
@@ -222,10 +241,16 @@ class Importer
 
     @converters = value
   end
+
+  def column_names=(value)
+    raise ArgumentError unless value.is_a?(Array) && value.all? { |elt| elt.is_a?(String) && elt.length > 3 }
+
+    @column_names = value
+  end
 end
 ```
 
-### After refactor with Otoroshi (5 lines / 351 characters dedicated to properties)
+### After refactor with Otoroshi (6 lines dedicated to properties)
 
 ```ruby
 class Importer
@@ -233,8 +258,9 @@ class Importer
 
   property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
   property :headers, [TrueClass, FalseClass], default: false
-  property :col_sep, String, validate: ->(v) { v.in? [',', ';', '\s', '\t', '|'] }, default: ','
-  property :converters, Symbol, validate: ->(v) { v.in? %i[integer float date] }, allow_nil: true
+  property :col_sep, one_of: [',', ';', '\s', '\t', '|'], default: ','
+  property :converters, one_of: [:integer, :float, :date], allow_nil: true
+  property :column_names, String, array: true, validate: ->(v) { v.length > 3 }, default: []
 
   private
 

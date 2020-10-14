@@ -23,7 +23,7 @@ module Otoroshi
   end
 
   # Manages errors raised when value is not accepted (not included in the "one_of")
-  class NotAccepted < Error
+  class NotAcceptedError < Error
     # Initialize an error
     #
     # @param property [Symbol] name of the property
@@ -41,7 +41,7 @@ module Otoroshi
   end
 
   # Manages errors raised when value does not pass the specific validation
-  class SpecificFailure < Error
+  class SpecificValidationError < Error
     # Initialize an error
     #
     # @param property [Symbol] name of the property
