@@ -94,7 +94,7 @@
 
 <h3 id="define-classs-properties">Define class&#39;s properties</h3>
 
-<p>Use the <code>::property(name, type, options)</code> method to add a property.</p>
+<p>The <code>::property(name, type, options)</code> method add a property.</p>
 
 <ul>
 <li><code>name</code>: name of the property (symbol or string)</li>
@@ -104,154 +104,190 @@
 <ul>
 <li><code>array</code>: define if the expected value should be an array (boolean, <code>false</code> by default)</li>
 <li><code>one_of</code>: a list of accepted value (array, <code>nil</code> by default)</li>
-<li><code>validate</code>: a custom validation to apply to the future value (lambda, <code>-&gt;(_) { true }</code> by default)</li>
+<li><code>assert</code>: a custom assertion to apply to the value (lambda, <code>-&gt;(_) { true }</code> by default)</li>
 <li><code>allow_nil</code>: define if the future value can be set to nil (boolean, <code>false</code> by default)</li>
 <li><code>default</code>: the default value for this property (should match the required type, <code>nil</code> by default)</li>
 </ul></li>
 </ul>
 
-<p>Getters and a setters are automatically set:</p>
+<p>Getters and a setters are automatically set.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='const'>Integer</span>
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:bar</span><span class='comma'>,</span> <span class='const'>String</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:message</span><span class='comma'>,</span> <span class='const'>String</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:fruits</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Symbol</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='int'>42</span><span class='comma'>,</span> <span class='label'>bar:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hello</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='int'>42</span><span class='comma'>,</span> <span class='label'>message:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hello</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>fruits:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:pear</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># 42
-</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_bar'>bar</span> <span class='comment'># hello
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='comment'># 42
+</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span> <span class='comment'># hello
+</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='comment'># [:apple, :pear]
 </span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='int'>7</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_bar'>bar</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>world</span><span class='tstring_end'>&#39;</span></span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='int'>7</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>world</span><span class='tstring_end'>&#39;</span></span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:banana</span>
 
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># 7
-</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_bar'>bar</span> <span class='comment'># world
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='comment'># 7
+</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span> <span class='comment'># world
+</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='comment'># [:apple, :pear, :banana]
 </span></code></pre>
 
-<p>Type validations run on initialization and assignment:</p>
+<p>Validations run on initialization and assignment, starting by a type check.</p>
+
+<p>For arrays property, use the <code>&lt;&lt;</code> to run validations on the pushed value. If for whatever reason you do not want the validations to run, use <code>#push</code>.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='const'>Integer</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span>
 <span class='kw'>end</span>
 
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='comment'># Otoroshi::WrontTypeError, :foo is not an instance of Integer
-</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='float'>1.5</span><span class='rparen'>)</span> <span class='comment'># Otoroshi::WrontTypeError, :foo is not an instance of Integer
-</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='kw'>nil</span> <span class='comment'># Otoroshi::WrontTypeError, :foo is not an instance of Integer
-</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='float'>1.5</span> <span class='comment'># Otoroshi::WrontTypeError, :foo is not an instance of Integer
-</span></code></pre>
-
-<p>You can provide multiple authorized types:</p>
-
-<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
-  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
-
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Symbol</span><span class='comma'>,</span> <span class='const'>String</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:bar</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='rbracket'>]</span>
-<span class='kw'>end</span>
-
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='symbol'>:hello</span><span class='comma'>,</span> <span class='label'>bar:</span> <span class='kw'>true</span><span class='rparen'>)</span>
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hello</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>bar:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+<span class='comment'># Those examples will raise an Otoroshi::WrontTypeError
+</span><span class='comment'># with message: &quot;:quantity is not an instance of Integer&quot;
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='float'>1.5</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='float'>1.5</span>
 </code></pre>
 
-<p>You can avoid the second argument so any <code>Object</code> can be passed:</p>
+<p>If type is not provided it will be set to <code>Object</code> so anything can be assigned.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span>
-<span class='kw'>end</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:thing</span> <span class='comment'># == property :thing, Object
+</span><span class='kw'>end</span>
 
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hello</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='int'>42</span><span class='rparen'>)</span>
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='comment'># Those examples won&#39;t raise any error
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>thing:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hello</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>thing:</span> <span class='int'>42</span><span class='rparen'>)</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>thing:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>2</span><span class='comma'>,</span> <span class='int'>3</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 </code></pre>
 
-<p>Use the <code>one_of</code> option to list accpeted values:</p>
+<p>If type is <code>[]</code> or <code>Array</code>, each element are treated as <code>Object</code>.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:pear</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:things</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='comment'># == property :things, [Object]
+</span><span class='kw'>end</span>
+
+<span class='comment'># These examples won&#39;t raise any error
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>things:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>a</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>b</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>c</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>things:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>2</span><span class='comma'>,</span> <span class='int'>3</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>things:</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+
+<p>The <code>one_of</code> option limits the accepted values.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
+  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
+
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:eatable</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='kw'>true</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='symbol'>:pear</span><span class='rparen'>)</span>
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='symbol'>:banana</span><span class='rparen'>)</span> <span class='comment'># Otoroshi::NotAcceptedError, :foo is not included in [apple, pear]
-</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='symbol'>:pear</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='symbol'>:banana</span> <span class='comment'># Otoroshi::NotAcceptedError, :foo is not included in [apple, pear]
-</span></code></pre>
+<span class='comment'># These examples will raise an Otoroshi::NotAcceptedError
+</span><span class='comment'># with message: &quot;eatable is not included in [true, false]&quot;
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>eatable:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maybe</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_eatable'>eatable</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maybe</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
 
-<p>You can add custom validations with the <code>validate:</code> option.</p>
+<p>If property is an array, the <code>one_of</code> is applied to each element.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>validate:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:fruits</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:pear</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span> <span class='comment'># Otoroshi::SpecificValidationError, :foo does not pass specific validation
-</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='op'>-</span><span class='int'>1</span> <span class='comment'># Otoroshi::SpecificValidationError, :foo does not pass specific validation
-</span></code></pre>
+<span class='comment'># These examples will raise an Otoroshi::NotAcceptedError
+</span><span class='comment'># with message: &quot;:fruits contains elements that are not included in [:apple, :pear]&quot;
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>fruits:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:banana</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruit'>fruit</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:banana</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruit'>fruit</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:banana</span>
+</code></pre>
 
-<p>Set <code>allow_nil:</code> option to <code>true</code> if <code>nil</code> is authorized:</p>
+<p>The <code>assert</code> option adds a specific lambda validation:</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>validate:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>allow_nil:</span> <span class='kw'>true</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span>
+
+<span class='comment'># These examples will raise an Otoroshi::AssertionError
+</span><span class='comment'># with message: &quot;:quantity does not respect the assertion&quot;
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='op'>-</span><span class='int'>1</span>
+</code></pre>
+
+<p>If property is an array, the <code>assert</code> is applied to each element.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
+  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
+
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantities</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Integer</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span>
+
+<span class='comment'># These examples will raise an Otoroshi::NotAcceptedError
+</span><span class='comment'># with message: &quot;:quantity contains elements that do not respect the assertion&quot;
+</span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>&lt;&lt;</span> <span class='op'>-</span><span class='int'>1</span>
+</code></pre>
+
+<p>The <code>allow_nil</code> option will define if <code>nil</code> is accepted as a value (default to <code>false</code>).</p>
+
+<pre class="code ruby"><code class="ruby">class Example
+  include Otoroshi::Sanctuary
+
+  property :message, String, allow_nil: true
+
+
+# Those examples won&#39;t raise any error
+instance = Example.new
+instance.message = nil
+</code></pre>
+
+<p>If property is an array, the <code>allow_nil</code> concerns the value itself, not the elements.</p>
+
+<pre class="code ruby"><code class="ruby">class Example
+  include Otoroshi::Sanctuary
+
+  property :messages, [String], allow_nil: true
+
+
+# Those examples won&#39;t raise any error
+instance = Example.new
+instance.message = nil
+
+# Those examples will raise an Otoroshi::WrontTypeError
+# with message: &quot;:messages contains elements that are not instances of String&quot;
+instance = Example.new(messages: [nil])
+instance.message = [nil]
+</code></pre>
+
+<p>The <code>default</code> option permit to define a default value, only on initialization if the key is not passed.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
+  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
+
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>allow_nil:</span> <span class='kw'>true</span>
 <span class='kw'>end</span>
 
 <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># nil
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='comment'># 0
 </span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='int'>42</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='kw'>nil</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># nil
-</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='op'>-</span><span class='int'>1</span> <span class='comment'># Otoroshi::SpecificValidationError, :foo does not pass specific validation
-</span></code></pre>
-
-<p>Set <code>default:</code> option to the default value. You can always set the value to <code>nil</code> if <code>allow_nil</code> is <code>true</code>.</p>
-
-<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
-  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
-
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>validate:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>allow_nil:</span> <span class='kw'>true</span>
-<span class='kw'>end</span>
-
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># 1
+<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='comment'># nil
 </span>
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># nil
-</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='kw'>nil</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># nil
-</span></code></pre>
-
-<p>Set <code>array:</code> to <code>true</code> to apply the validations on each element.</p>
-
-<p><code>allow_nil</code> and <code>default</code> still refer to the array, not the elements.</p>
-
-<pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
-  <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
-
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:foo</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>validate:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>allow_nil:</span> <span class='kw'>true</span>
-<span class='kw'>end</span>
-
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='comment'># []
-</span>
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-
-<span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>foo:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='float'>1.5</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='comment'># Otoroshi::WrontTypeError, :foo contains elements that are not instances of Integer
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='comment'># nil
 </span></code></pre>
 
 <h2 id="refactor-example">Refactor Example</h2>
@@ -259,14 +295,14 @@
 <h3 id="before-refactor-28-lines-dedicated-to-properties">Before refactor (28 lines dedicated to properties)</h3>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Importer</span>
-  <span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:file_path</span><span class='comma'>,</span> <span class='symbol'>:headers</span><span class='comma'>,</span> <span class='symbol'>:col_sep</span><span class='comma'>,</span> <span class='symbol'>:converters</span><span class='comma'>,</span> <span class='symbol'>:column_names</span>
+  <span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:file_path</span><span class='comma'>,</span> <span class='symbol'>:headers</span><span class='comma'>,</span> <span class='symbol'>:col_sep</span><span class='comma'>,</span> <span class='symbol'>:converters</span><span class='comma'>,</span> <span class='symbol'>:columns</span>
 
-  <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>file_path:</span><span class='comma'>,</span> <span class='label'>headers:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>col_sep:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>converters:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>column_names:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>file_path:</span><span class='comma'>,</span> <span class='label'>headers:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>col_sep:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>converters:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>columns:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
     <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_file_path'>file_path</span> <span class='op'>=</span> <span class='id identifier rubyid_file_path'>file_path</span>
     <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_headers'>headers</span> <span class='op'>=</span> <span class='id identifier rubyid_headers'>headers</span>
     <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_col_sep'>col_sep</span> <span class='op'>=</span> <span class='id identifier rubyid_col_sep'>col_sep</span>
     <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_converters'>converters</span> <span class='op'>=</span> <span class='id identifier rubyid_converters'>converters</span>
-    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_column_names'>column_names</span> <span class='op'>=</span> <span class='id identifier rubyid_column_names'>column_names</span>
+    <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_columns'>columns</span> <span class='op'>=</span> <span class='id identifier rubyid_columns'>columns</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_private'>private</span>
@@ -297,10 +333,10 @@
     <span class='ivar'>@converters</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
   <span class='kw'>end</span>
 
-  <span class='kw'>def</span> <span class='id identifier rubyid_column_names='>column_names=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>def</span> <span class='id identifier rubyid_columns='>columns=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span> <span class='kw'>unless</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_elt'>elt</span><span class='op'>|</span> <span class='id identifier rubyid_elt'>elt</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_elt'>elt</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>&gt;</span> <span class='int'>3</span> <span class='rbrace'>}</span>
 
-    <span class='ivar'>@column_names</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+    <span class='ivar'>@columns</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span>
 </code></pre>
@@ -310,11 +346,11 @@
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Importer</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
 
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:file_path</span><span class='comma'>,</span> <span class='const'>String</span><span class='comma'>,</span> <span class='label'>validate:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>.+\.csv</span><span class='regexp_end'>/</span></span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:headers</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>false</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:file_path</span><span class='comma'>,</span> <span class='const'>String</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>.+\.csv</span><span class='regexp_end'>/</span></span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:headers</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='kw'>true</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>false</span>
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:col_sep</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>;</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\s</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\t</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>|</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>,</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:converters</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='symbol'>:integer</span><span class='comma'>,</span> <span class='symbol'>:float</span><span class='comma'>,</span> <span class='symbol'>:date</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>allow_nil:</span> <span class='kw'>true</span>
-  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:column_names</span><span class='comma'>,</span> <span class='const'>String</span><span class='comma'>,</span> <span class='label'>array:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>validate:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>&gt;</span> <span class='int'>3</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:columns</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>String</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>&gt;</span> <span class='int'>3</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 
   <span class='id identifier rubyid_private'>private</span>
 
@@ -324,7 +360,7 @@
 </div></div>
 
       <div id="footer">
-  Generated on Wed Oct 14 23:40:49 2020 by
+  Generated on Thu Oct 15 23:06:52 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.6).
 </div>

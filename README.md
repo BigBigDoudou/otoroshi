@@ -41,7 +41,7 @@ The `::property(name, type, options)` method add a property.
 * options:
   * `array`: define if the expected value should be an array (boolean, `false` by default)
   * `one_of`: a list of accepted value (array, `nil` by default)
-  * `validate`: a custom validation to apply to the future value (lambda, `->(_) { true }` by default)
+  * `assert`: a custom assertion to apply to the value (lambda, `->(_) { true }` by default)
   * `allow_nil`: define if the future value can be set to nil (boolean, `false` by default)
   * `default`: the default value for this property (should match the required type, `nil` by default)
 
@@ -159,7 +159,7 @@ The `assert` option adds a specific lambda validation:
 class Example
   include Otoroshi::Sanctuary
 
-  property :quantity, Integer, validate: ->(v) { v > 0 }
+  property :quantity, Integer, assert: ->(v) { v > 0 }
 end
 
 # These examples will raise an Otoroshi::AssertionError
@@ -174,7 +174,7 @@ If property is an array, the `assert` is applied to each element.
 class Example
   include Otoroshi::Sanctuary
 
-  property :quantities, [Integer], validate: ->(v) { v > 0 }
+  property :quantities, [Integer], assert: ->(v) { v > 0 }
 end
 
 # These examples will raise an Otoroshi::NotAcceptedError
@@ -294,11 +294,11 @@ end
 class Importer
   include Otoroshi::Sanctuary
 
-  property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
+  property :file_path, String, assert: ->(v) { v.match? /.+\.csv/ }
   property :headers, one_of: [true, false], default: false
   property :col_sep, one_of: [',', ';', '\s', '\t', '|'], default: ','
   property :converters, one_of: [:integer, :float, :date], allow_nil: true
-  property :columns, [String], validate: ->(v) { v.length > 3 }, default: []
+  property :columns, [String], assert: ->(v) { v.length > 3 }, default: []
 
   private
 
