@@ -272,7 +272,9 @@ instance = Example.new(messages: [nil])
 instance.message = [nil]
 </code></pre>
 
-<p>The <code>default</code> option permit to define a default value, only on initialization if the key is not passed.</p>
+<p>The <code>default</code> option permits to define a default value, only on initialization if the key is not passed.</p>
+
+<p>In case property is an array, it applies on the value itself, not on each element.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
@@ -360,7 +362,7 @@ instance.message = [nil]
 </div></div>
 
       <div id="footer">
-  Generated on Thu Oct 15 23:06:52 2020 by
+  Generated on Thu Oct 15 23:09:27 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.6).
 </div>
