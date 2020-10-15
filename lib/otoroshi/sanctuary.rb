@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'awesome_print'
-
 module Otoroshi
   # This module is designed to be included in a class. This will provide
   # the "property" ({Sanctuary::ClassMethods.property}) method for defining class properties.
