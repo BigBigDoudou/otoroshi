@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'awesome_print'
+
 module Otoroshi
   # This module is designed to be included in a class. This will provide
   # the "property" ({Sanctuary::ClassMethods.property}) method for defining class properties.
@@ -8,10 +10,13 @@ module Otoroshi
   #   class Importer
   #     include Otoroshi::Sanctuary
   #
-  #     property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
-  #     property :headers, [TrueClass, FalseClass], default: false
-  #     property :col_sep, String, validate: ->(v) { v.in? [',', ';', '\s', '\t', '|'] }, default: ','
-  #     property :converters, Symbol, validate: ->(v) { v.in? %i[integer float date] }, allow_nil: true
+  #     property :whatever
+  #     property :number, Integer
+  #     property :numbers, [Integer]
+  #     property :positive_number, Integer, verify: ->(v) { v >= 0 }
+  #     property :number_or_nil, Integer, allow_nil: true
+  #     property :number_with_default, Integer, default: 42
+  #     property :number_from_collection, Integer, one_of: [1, 2, 3, 5, 8, 13, 21, 34]
   #   end
   module Sanctuary
     class << self
@@ -26,35 +31,42 @@ module Otoroshi
       # Adds a new "property" to the class
       #
       # @param name [Symbol] the property name
-      # @param type [Class] the expected value type
-      # @param array [true, false] expect value to be an array
+      # @param type [Class, Array<Class>] the expected value or values type
       # @param one_of [Array] the accepted values
-      # @param validate [Proc] a lambda processing the value and returning true or false
+      # @param assert [Proc] a lambda processing the value and returning true or false
       # @param allow_nil [true, false] allow nil as a value
       # @param default [Object] default value if not set on initialization
       #
       # @return [void]
       #
       # @example
-      #   property name, type: String, validate: ->(v) { v.length > 3 }, allow_nil: true
+      #   property name, type: String, assert: ->(v) { v.length > 3 }, allow_nil: true
       # @example
-      #   property score, type: Integer, validate: ->(v) { v >= 0 }, default: 0
+      #   property scores, type: [Integer], assert: ->(v) { v >= 0 }, default: []
       def property( # rubocop:disable Metrics/ParameterLists
         name,
         type = Object,
-        array: false,
         one_of: nil,
-        validate: ->(_) { true },
+        assert: ->(_) { true },
         allow_nil: false,
         default: nil
       )
-        add_to_properties(name, allow_nil, default)
-        define_validate_type!(name, type, array, allow_nil)
-        define_validate_inclusion!(name, array, one_of, allow_nil)
-        define_validate_specific!(name, array, validate, allow_nil)
+        add_to_properties(name, type, one_of, assert, allow_nil, default)
+        define_validate_type!(name, type, allow_nil)
+        define_validate_inclusion!(name, type, one_of, allow_nil)
+        define_validate_assertion!(name, type, assert, allow_nil)
         define_getter(name)
         define_setter(name)
         redefine_initialize
+      end
+
+      # Checks the type is an array
+      #
+      # @param type [Class, Array<Class>] the tested type
+      #
+      # @return [true, false]
+      def collection?(type)
+        type == Array || type.is_a?(Array)
       end
 
       # Returns the class properties
@@ -71,9 +83,15 @@ module Otoroshi
       # Updates {properties} to add new property to the returned ones
       #
       # @return [void]
-      def add_to_properties(name, allow_nil, default)
+      def add_to_properties(name, type, one_of, assert, allow_nil, default) # rubocop:disable Metrics/ParameterLists
         current_state = properties
-        current_state[name] = { allow_nil: allow_nil, default: default }
+        current_state[name] = {
+          type: type,
+          one_of: one_of,
+          assert: assert,
+          allow_nil: allow_nil,
+          default: default
+        }
         define_singleton_method(:properties) { current_state }
       end
 
@@ -95,15 +113,17 @@ module Otoroshi
       #
       #     raise ArgumentError, ":score does not match required type"
       #   end
-      def define_validate_type!(name, type, array, allow_nil)
-        lambda = type_validation(type, array: array)
+      def define_validate_type!(name, type, allow_nil)
+        lambda = type_validation(type)
+        is_array = collection?(type)
+        check_array = ->(v) { v.is_a?(Array) || raise(Otoroshi::NotAnArray, name) }
         define_method :"validate_#{name}_type!" do |value|
           return if allow_nil && value.nil?
 
-          raise Otoroshi::WrongTypeError.new(name, Array) if array && !value.is_a?(Array)
+          is_array && check_array.call(value)
           return if lambda.call(value)
 
-          raise Otoroshi::WrongTypeError.new(name, type, array: array)
+          raise Otoroshi::WrongTypeError.new(name, type, array: is_array)
         end
         private :"validate_#{name}_type!"
       end
@@ -119,13 +139,17 @@ module Otoroshi
       #   type_validation(Integer) #=> ->(v) { v.is_a? Integer }
       # @example
       #   type_validation([String, Symbol]) #=> ->(v) { [String, Symbol].any? { |t| v.is_a? t } }
-      def type_validation(type, array: false)
-        if array
-          # validate value is an array then apply the lambda on each element
-          ->(v) { v.all? { |e| type_validation(type).call(e) } }
-        elsif type.is_a? Array
-          # check the value matches one of the types
-          ->(v) { type.any? { |t| v.is_a? t } }
+      def type_validation(type)
+        if type == Array
+          # no expected type for each element, return nil
+          ->(_) {}
+        elsif type.is_a?(Array)
+          # get the real expected type
+          # e.g. if type is [Integer] then element_type should be Integer
+          # e.g. if type is [] then element_type should be Object
+          element_type = type.first || Object
+          # apply type_validation lambda on each element
+          ->(v) { v.all? { |e| type_validation(element_type).call(e) } }
         else
           # check the value matches the type
           ->(v) { v.is_a? type }
@@ -136,7 +160,7 @@ module Otoroshi
       #
       # @param name [Symbol] the property name
       # @param array [true, false] define if the value is an array
-      # @param accepted_values [Array, nil] the values to test against
+      # @param values [Array, nil] the values to test against
       # @param allow_nil [true, false] allow nil as a value
       #
       # @return [void]
@@ -150,13 +174,11 @@ module Otoroshi
       #
       #     raise ArgumentError, ":side is not included in accepted values"
       #   end
-      def define_validate_inclusion!(name, array, accepted_values, allow_nil)
-        lambda = validate_inclusion_lambda(name, array, accepted_values)
-        if accepted_values
+      def define_validate_inclusion!(name, type, values, allow_nil)
+        validator = collection?(type) ? each_inside?(name, values) : inside?(name, values)
+        if values
           define_method(:"validate_#{name}_inclusion!") do |value|
-            return if allow_nil && value.nil?
-
-            lambda.call(value)
+            allow_nil && value.nil? || validator.call(value)
           end
         else
           define_method(:"validate_#{name}_inclusion!") { |_| }
@@ -164,102 +186,66 @@ module Otoroshi
         private :"validate_#{name}_inclusion!"
       end
 
-      # Chooses which method to call depending on the value of "array"
-      #
-      # @param name [Symbol] the property name
-      # @param array [true, false] define if the value is an array
-      # @param accepted_values [Array, nil] the values to test against
-      #
-      # @return [Proc] the lambda to use in order to test that value respects the one_of condition
-      def validate_inclusion_lambda(name, array, accepted_values)
-        if array
-          validate_each_inclusion(name, accepted_values)
-        else
-          validate_inclusion(name, accepted_values)
-        end
-      end
-
       # Defines a lambda to be called to validate that value is included in accepted ones
       #
       # @param name [Symbol] the property name
-      # @param accepted_values [Array, nil] the values to test against
+      # @param values [Array, nil] the values to test against
       #
       # @return [Proc] the lambda to use in order to test that value is included in accepted ones
-      def validate_inclusion(name, accepted_values)
-        lambda do |value|
-          return if accepted_values.include?(value)
-
-          raise Otoroshi::NotAcceptedError.new(name, accepted_values)
+      def inside?(name, values)
+        lambda do |v|
+          values.include?(v) || raise(Otoroshi::NotAcceptedError.new(name, values))
         end
       end
 
       # Defines a lambda to be called to validate that each value is included in accepted ones
       #
       # @param name [Symbol] the property name
-      # @param accepted_values [Array, nil] the values to test against
+      # @param values [Array, nil] the values to test against
       #
       # @return [Proc] the lambda to use in order to test that each value is included in accepted ones
-      def validate_each_inclusion(name, accepted_values)
-        lambda do |value|
-          return if value.all? { |e| accepted_values.include? e }
-
-          raise Otoroshi::NotAcceptedError.new(name, accepted_values, array: true)
+      def each_inside?(name, values)
+        lambda do |v|
+          v.all? { |e| values.include? e } || raise(Otoroshi::NotAcceptedError.new(name, values, array: true))
         end
       end
 
-      # Defines a private method that raises an error if validate block returns false
+      # Defines a private method that raises an error if assert lambda returns false
       #
       # @param name [Symbol] the property name
-      # @param validate [Proc] a lambda processing the value and returning true or false
+      # @param assert [Proc] a lambda processing the value and returning true or false
       # @param allow_nil [true, false] allow nil as a value
       #
       # @return [void]
       #
       # @example
-      #   define_validate_specific!("score", ->(v) { v >= 0 }, false) #=> def validate_score_lambda!(value) ...
+      #   define_validate_assertion!("score", ->(v) { v >= 0 }, false) #=> def validate_score_assertion!(value) ...
       # @example Generated instance method
-      #   def validate_score_lambda!(value)
+      #   def validate_score_assertion!(value)
       #     return if false && value.nil?
       #     return if value >= 0
       #
       #     raise ArgumentError, ":score does not match validation"
       #   end
-      def define_validate_specific!(name, array, validate, allow_nil)
-        lambda = validate_specific_lambda(name, array, validate)
-        define_method :"validate_#{name}_lambda!" do |value|
-          return if allow_nil && value.nil?
-
-          lambda.call(value)
+      def define_validate_assertion!(name, type, assert, allow_nil)
+        validator = collection?(type) ? each_assert?(name, assert) : assert?(name, assert)
+        define_method :"validate_#{name}_assertion!" do |value|
+          allow_nil && value.nil? || validator.call(value)
         end
-        private :"validate_#{name}_lambda!"
-      end
-
-      # Chooses which method to call depending on the value of "array"
-      #
-      # @param name [Symbol] the property name
-      # @param array [true, false] define if the value is an array
-      # @param validate [Proc] a lambda processing the value and returning true or false
-      #
-      # @return [Proc] the lambda to use in order to test that value respects the specific condition
-      def validate_specific_lambda(name, array, validate)
-        if array
-          validate_each_specific(name, validate)
-        else
-          validate_specific(name, validate)
-        end
+        private :"validate_#{name}_assertion!"
       end
 
       # Defines a lambda to be called to validate that value respects the specific
       #
       # @param name [Symbol] the property name
-      # @param validate [Proc] a lambda processing the value and returning true or false
+      # @param assert [Proc] a lambda processing the value and returning true or false
       #
       # @return [Proc] the lambda to use in order to test that value respects the specific
-      def validate_specific(name, validate)
+      def assert?(name, assert)
         lambda do |value|
-          return if instance_exec(value, &validate)
+          return if instance_exec(value, &assert)
 
-          raise Otoroshi::SpecificValidationError, name
+          raise Otoroshi::AssertionError, name
         end
       end
 
@@ -269,11 +255,11 @@ module Otoroshi
       # @param validate [Proc] a lambda processing the value and returning true or false
       #
       # @return [Proc] the lambda to use in order to test that each value respects the specific
-      def validate_each_specific(name, validate)
+      def each_assert?(name, validate)
         lambda do |value|
           return if value.all? { |e| instance_exec(e, &validate) }
 
-          raise Otoroshi::SpecificValidationError.new(name, array: true)
+          raise Otoroshi::AssertionError.new(name, array: true)
         end
       end
 
@@ -311,7 +297,7 @@ module Otoroshi
         define_method :"#{name}=" do |value|
           __send__(:"validate_#{name}_type!", value)
           __send__(:"validate_#{name}_inclusion!", value)
-          __send__(:"validate_#{name}_lambda!", value)
+          __send__(:"validate_#{name}_assertion!", value)
           instance_variable_set("@#{name}", value)
         end
       end
@@ -330,12 +316,13 @@ module Otoroshi
       def redefine_initialize
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def initialize(#{initialize_parameters})
-            #{initialize_body}
+            #{initialize_assignments}
+            #{initialize_push_singletons}
           end
         RUBY
       end
 
-      # Defines initialize method parameters
+      # Generates initialize method parameters
       #
       # @return [String]
       #
@@ -350,7 +337,7 @@ module Otoroshi
         parameters.join(', ')
       end
 
-      # Defines the default value of a parameter depending on options
+      # Fixes the default value of a parameter depending on options
       #
       # @param options [Hash]
       #
@@ -363,19 +350,49 @@ module Otoroshi
       # @example when nil is not allowed
       #   default_parameter_for(false, nil) #=> ""
       def default_parameter_for(allow_nil, default)
-        return " #{default}" if default
-
-        allow_nil ? ' nil' : ''
+        if default
+          symbol_prefix = default.is_a?(Symbol) ? ':' : ''
+          " #{symbol_prefix}#{default}"
+        else
+          allow_nil ? ' nil' : ''
+        end
       end
 
-      # Defines initialize method body
+      # Generates initialize method assignments
       #
       # @return [String]
       #
       # @example Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }
       #   initialize_body #=> "self.foo = foo\nself.bar = bar"
-      def initialize_body
-        properties.keys.map { |key| "self.#{key} = #{key}" }.join("\n")
+      def initialize_assignments
+        properties.keys.map { |name| "self.#{name} = #{name}" }.join("\n")
+      end
+
+      # Generates push singleton for each array property
+      #
+      # @return [String]
+      def initialize_push_singletons
+        collections = properties.select { |_, options| collection?(options[:type]) }
+        singletons =
+          collections.keys.map { |name| initialize_push_singleton(name) }
+        singletons.join("\n")
+      end
+
+      # Generates singleton on array instance variable to overide <<
+      # so value is validated before being added to the array
+      #
+      # @return [String]
+      def initialize_push_singleton(name)
+        <<-RUBY
+        bind = self
+        @#{name}.singleton_class.send(:define_method, :<<) do |v|
+          bind.send(:"validate_#{name}_type!", [v])
+          bind.send(:"validate_#{name}_inclusion!", [v])
+          bind.send(:"validate_#{name}_assertion!", [v])
+
+          push(v)
+        end
+        RUBY
       end
     end
   end

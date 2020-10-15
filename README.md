@@ -34,7 +34,7 @@ end
 
 ### Define class's properties
 
-Use the `::property(name, type, options)` method to add a property.
+The `::property(name, type, options)` method add a property.
 
 * `name`: name of the property (symbol or string)
 * `type`: the class the future value should belongs to (class or array of classes, `Object` by default)
@@ -45,157 +45,195 @@ Use the `::property(name, type, options)` method to add a property.
   * `allow_nil`: define if the future value can be set to nil (boolean, `false` by default)
   * `default`: the default value for this property (should match the required type, `nil` by default)
 
-Getters and a setters are automatically set:
+Getters and a setters are automatically set.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer
-  property :bar, String
+  property :quantity, Integer
+  property :message, String
+  property :fruits, [Symbol]
 end
 
-instance = Example.new(foo: 42, bar: 'hello')
+instance = Example.new(quantity: 42, message: 'hello', fruits: [:apple, :pear])
 
-instance.foo # 42
-instance.bar # hello
+instance.quantity # 42
+instance.message # hello
+instance.fruits # [:apple, :pear]
 
-instance.foo = 7
-instance.bar = 'world'
+instance.quantity = 7
+instance.message = 'world'
+instance.fruits << :banana
 
-instance.foo # 7
-instance.bar # world
+instance.quantity # 7
+instance.message # world
+instance.fruits # [:apple, :pear, :banana]
 ```
 
-Type validations run on initialization and assignment:
+Validations run on initialization and assignment, starting by a type check.
+
+For arrays property, use the `<<` to run validations on the pushed value. If for whatever reason you do not want the validations to run, use `#push`.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer
+  property :quantity, Integer
 end
 
-Example.new # Otoroshi::WrontTypeError, :foo is not an instance of Integer
-Example.new(foo: 1.5) # Otoroshi::WrontTypeError, :foo is not an instance of Integer
-
-instance.foo = nil # Otoroshi::WrontTypeError, :foo is not an instance of Integer
-instance.foo = 1.5 # Otoroshi::WrontTypeError, :foo is not an instance of Integer
+# Those examples will raise an Otoroshi::WrontTypeError
+# with message: ":quantity is not an instance of Integer"
+Example.new
+Example.new(quantity: 1.5)
+instance.quantity = nil
+instance.quantity = 1.5
 ```
 
-You can provide multiple authorized types:
+If type is not provided it will be set to `Object` so anything can be assigned.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, [Symbol, String]
-  property :bar, [TrueClass, FalseClass]
+  property :thing # == property :thing, Object
 end
 
-Example.new(foo: :hello, bar: true)
-Example.new(foo: 'hello', bar: false)
+# Those examples won't raise any error
+Example.new
+Example.new(thing: 'hello')
+Example.new(thing: 42)
+Example.new(thing: [1, 2, 3])
 ```
 
-You can avoid the second argument so any `Object` can be passed:
+If type is `[]` or `Array`, each element are treated as `Object`.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo
+  property :things, [] # == property :things, [Object]
 end
 
-Example.new(foo: 'hello')
-Example.new(foo: 42)
-Example.new(foo: User.find(1))
+# These examples won't raise any error
+Example.new
+Example.new(things: ['a', 'b', 'c'])
+Example.new(things: [1, 2, 3])
+Example.new(things: [[], []])
 ```
 
-Use the `one_of` option to list accpeted values:
+The `one_of` option limits the accepted values.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, one_of: [:apple, :pear]
+  property :eatable, one_of: [true, false]
 end
 
-Example.new(foo: :pear)
-Example.new(foo: :banana) # Otoroshi::NotAcceptedError, :foo is not included in [apple, pear]
-
-instance.foo = :pear
-instance.foo = :banana # Otoroshi::NotAcceptedError, :foo is not included in [apple, pear]
+# These examples will raise an Otoroshi::NotAcceptedError
+# with message: "eatable is not included in [true, false]"
+Example.new(eatable: 'maybe')
+instance.eatable = 'maybe'
 ```
 
-You can add custom validations with the `validate:` option.
+If property is an array, the `one_of` is applied to each element.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer, validate: ->(v) { v > 0 }
+  property :fruits, [], one_of: [:apple, :pear]
 end
 
-Example.new(foo: -1) # Otoroshi::SpecificValidationError, :foo does not pass specific validation
-
-instance.foo = -1 # Otoroshi::SpecificValidationError, :foo does not pass specific validation
+# These examples will raise an Otoroshi::NotAcceptedError
+# with message: ":fruits contains elements that are not included in [:apple, :pear]"
+Example.new(fruits: [:apple, :banana])
+instance.fruit = [:apple, :banana]
+instance.fruit << :banana
 ```
 
-Set `allow_nil:` option to `true` if `nil` is authorized:
+The `assert` option adds a specific lambda validation:
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
-  property :foo, Integer, validate: ->(v) { v > 0 }, allow_nil: true
+  property :quantity, Integer, validate: ->(v) { v > 0 }
+end
+
+# These examples will raise an Otoroshi::AssertionError
+# with message: ":quantity does not respect the assertion"
+Example.new(quantity: -1)
+instance.quantity = -1
+```
+
+If property is an array, the `assert` is applied to each element.
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :quantities, [Integer], validate: ->(v) { v > 0 }
+end
+
+# These examples will raise an Otoroshi::NotAcceptedError
+# with message: ":quantity contains elements that do not respect the assertion"
+Example.new(quantity: [1, -1])
+instance.quantity = [1, -1]
+instance.quantity << -1
+```
+
+The `allow_nil` option will define if `nil` is accepted as a value (default to `false`).
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :message, String, allow_nil: true
+
+
+# Those examples won't raise any error
+instance = Example.new
+instance.message = nil
+```
+
+If property is an array, the `allow_nil` concerns the value itself, not the elements.
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :messages, [String], allow_nil: true
+
+
+# Those examples won't raise any error
+instance = Example.new
+instance.message = nil
+
+# Those examples will raise an Otoroshi::WrontTypeError
+# with message: ":messages contains elements that are not instances of String"
+instance = Example.new(messages: [nil])
+instance.message = [nil]
+```
+
+The `default` option permit to define a default value, only on initialization if the key is not passed.
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :quantity, Integer, default: 0, allow_nil: true
 end
 
 instance = Example.new
-instance.foo # nil
+instance.quantity # 0
 
-instance.foo = 42
-instance.foo = nil
-instance.foo # nil
-instance.foo = -1 # Otoroshi::SpecificValidationError, :foo does not pass specific validation
-```
+instance = Example.new(quantity: nil)
+instance.quantity # nil
 
-Set `default:` option to the default value. You can always set the value to `nil` if `allow_nil` is `true`.
-
-```ruby
-class Example
-  include Otoroshi::Sanctuary
-
-  property :foo, Integer, validate: ->(v) { v > 0 }, default: 1, allow_nil: true
-end
-
-instance = Example.new
-instance.foo # 1
-
-instance = Example.new(foo: nil)
-instance.foo # nil
-
-instance.foo = nil
-instance.foo # nil
-```
-
-Set `array:` to `true` to apply the validations on each element.
-
-`allow_nil` and `default` still refer to the array, not the elements.
-
-```ruby
-class Example
-  include Otoroshi::Sanctuary
-
-  property :foo, Integer, validate: ->(v) { v > 0 }, default: [], allow_nil: true
-end
-
-instance = Example.new
-instance.foo # []
-
-instance = Example.new(foo: [])
-instance = Example.new(foo: [1, 2])
-
-instance = Example.new(foo: [1, 1.5]) # Otoroshi::WrontTypeError, :foo contains elements that are not instances of Integer
+instance.quantity = nil
+instance.quantity # nil
 ```
 
 ## Refactor Example
@@ -204,14 +242,14 @@ instance = Example.new(foo: [1, 1.5]) # Otoroshi::WrontTypeError, :foo contains 
 
 ```ruby
 class Importer
-  attr_reader :file_path, :headers, :col_sep, :converters, :column_names
+  attr_reader :file_path, :headers, :col_sep, :converters, :columns
 
-  def initialize(file_path:, headers: false, col_sep: ',', converters: nil, column_names: [])
+  def initialize(file_path:, headers: false, col_sep: ',', converters: nil, columns: [])
     self.file_path = file_path
     self.headers = headers
     self.col_sep = col_sep
     self.converters = converters
-    self.column_names = column_names
+    self.columns = columns
   end
 
   private
@@ -242,10 +280,10 @@ class Importer
     @converters = value
   end
 
-  def column_names=(value)
+  def columns=(value)
     raise ArgumentError unless value.is_a?(Array) && value.all? { |elt| elt.is_a?(String) && elt.length > 3 }
 
-    @column_names = value
+    @columns = value
   end
 end
 ```
@@ -257,10 +295,10 @@ class Importer
   include Otoroshi::Sanctuary
 
   property :file_path, String, validate: ->(v) { v.match? /.+\.csv/ }
-  property :headers, [TrueClass, FalseClass], default: false
+  property :headers, one_of: [true, false], default: false
   property :col_sep, one_of: [',', ';', '\s', '\t', '|'], default: ','
   property :converters, one_of: [:integer, :float, :date], allow_nil: true
-  property :column_names, String, array: true, validate: ->(v) { v.length > 3 }, default: []
+  property :columns, [String], validate: ->(v) { v.length > 3 }, default: []
 
   private
 

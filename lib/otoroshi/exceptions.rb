@@ -11,13 +11,24 @@ module Otoroshi
     # @param type [Class] class to match
     # @param array [true, false] define if it is an array
     def initialize(property, type, array: false)
-      expected_type = type.is_a?(Array) ? "[#{type.join(', ')}]" : type
+      expected_type = type.is_a?(Array) ? type.first || Object : type
       msg =
         if array
           ":#{property} contains elements that are not instances of #{expected_type}"
         else
           ":#{property} is not an instance of #{expected_type}"
         end
+      super(msg)
+    end
+  end
+
+  # Manages errors raised when value should be an array
+  class NotAnArray < Error
+    # Initialize an error
+    #
+    # @param property [Symbol] name of the property
+    def initialize(property)
+      msg = ":#{property} is not an array"
       super(msg)
     end
   end
@@ -30,18 +41,21 @@ module Otoroshi
     # @param accepted_values [Array] accepted values
     # @param array [true, false] define if it is an array
     def initialize(property, accepted_values, array: false)
+      # reintegrate the colon for symbols which is lost during interpolation
+      to_s = ->(v) { v.is_a?(Symbol) ? ":#{v}" : v }
+      accepted_values_list = accepted_values.map { |v| to_s.call(v) }.join(', ')
       msg =
         if array
-          ":#{property} contains elements that are not included in [#{accepted_values.join(', ')}]"
+          ":#{property} contains elements that are not included in [#{accepted_values_list}]"
         else
-          ":#{property} is not included in [#{accepted_values.join(', ')}]"
+          ":#{property} is not included in [#{accepted_values_list}]"
         end
       super(msg)
     end
   end
 
-  # Manages errors raised when value does not pass the specific validation
-  class SpecificValidationError < Error
+  # Manages errors raised when value does not pass the assertion
+  class AssertionError < Error
     # Initialize an error
     #
     # @param property [Symbol] name of the property
@@ -49,9 +63,9 @@ module Otoroshi
     def initialize(property, array: false)
       msg =
         if array
-          ":#{property} contains elements that do not pass specific validation"
+          ":#{property} contains elements that do not respect the assertion"
         else
-          ":#{property} does not pass specific validation"
+          ":#{property} does not respect the assertion"
         end
       super(msg)
     end
