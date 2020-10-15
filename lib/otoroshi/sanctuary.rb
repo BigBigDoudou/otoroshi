@@ -241,9 +241,7 @@ module Otoroshi
       # @return [Proc] the lambda to use in order to test that value respects the specific
       def assert?(name, assert)
         lambda do |value|
-          return if instance_exec(value, &assert)
-
-          raise Otoroshi::AssertionError, name
+          instance_exec(value, &assert) || raise(Otoroshi::AssertionError, name)
         end
       end
 
@@ -255,9 +253,7 @@ module Otoroshi
       # @return [Proc] the lambda to use in order to test that each value respects the specific
       def each_assert?(name, validate)
         lambda do |value|
-          return if value.all? { |e| instance_exec(e, &validate) }
-
-          raise Otoroshi::AssertionError.new(name, array: true)
+          value.all? { |e| instance_exec(e, &validate) } || raise(Otoroshi::AssertionError.new(name, array: true))
         end
       end
 
