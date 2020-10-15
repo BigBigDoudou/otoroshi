@@ -217,7 +217,9 @@ instance = Example.new(messages: [nil])
 instance.message = [nil]
 ```
 
-The `default` option permit to define a default value, only on initialization if the key is not passed.
+The `default` option permits to define a default value, only on initialization if the key is not passed.
+
+In case property is an array, it applies on the value itself, not on each element.
 
 ```ruby
 class Example
