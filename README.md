@@ -242,7 +242,9 @@ instance.quantity # nil
 
 ## Refactor Example
 
-### Before refactor (28 lines dedicated to properties)
+### Before refactor
+
+> 28 lines dedicated to properties
 
 ```ruby
 class Importer
@@ -292,7 +294,9 @@ class Importer
 end
 ```
 
-### After refactor with Otoroshi (6 lines dedicated to properties)
+### After refactor with Otoroshi
+
+> 6 lines dedicated to properties
 
 ```ruby
 class Importer
