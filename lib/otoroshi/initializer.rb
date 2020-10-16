@@ -86,10 +86,10 @@ module Otoroshi
     #   ""
     def default_parameter_for(options)
       default, allow_nil = options.values_at(:default, :allow_nil)
-      if default
-        " #{prefix(default)}#{default}#{suffix(default)}"
-      else
+      if default.nil?
         allow_nil ? ' nil' : ''
+      else
+        " #{prefix(default)}#{default}#{suffix(default)}"
       end
     end
 
