@@ -79,7 +79,7 @@ module Otoroshi
     # @return [String]
     #
     # @example when nil is allowed and default is set
-    #   " 0"
+    #   " \"default\""
     # @example when nil is allowed and default is not set
     #   " nil"
     # @example when nil is not allowed
@@ -87,8 +87,17 @@ module Otoroshi
     def default_parameter_for(options)
       default, allow_nil = options.values_at(:default, :allow_nil)
       if default
-        symbol_prefix = default.is_a?(Symbol) ? ':' : ''
-        " #{symbol_prefix}#{default}"
+        prefix =
+          case default
+          when Symbol then ':'
+          when String then '"'
+          end
+        suffix =
+          case default
+          when String then '"'
+          end
+
+        " #{prefix}#{default}#{suffix}"
       else
         allow_nil ? ' nil' : ''
       end

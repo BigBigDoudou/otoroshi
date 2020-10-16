@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative './initializer'
+
 module Otoroshi
   class Error < StandardError; end
 

@@ -53,6 +53,7 @@ module Otoroshi
         define_validate!(name)
         define_getter(name)
         define_setter(name)
+        puts Initializer.draw(properties)
         class_eval Initializer.draw(properties), __FILE__, __LINE__ + 1
       end
 
