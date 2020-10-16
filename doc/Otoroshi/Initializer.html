@@ -210,7 +210,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Fixes the default value of a parameter depending on options.</p>
+<p>Generates the default value of a parameter depending on options.</p>
 </div></span>
   
 </li>
@@ -416,12 +416,12 @@
       <pre class="lines">
 
 
-29
-30
-31</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_properties'>properties</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@properties</span> <span class='op'>=</span> <span class='id identifier rubyid_properties'>properties</span>
@@ -464,12 +464,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+61
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_properties'>properties</span>
   <span class='ivar'>@properties</span>
@@ -510,9 +510,15 @@
     
       
       <pre class="example code"><code><span class='heredoc_beg'>&lt;&lt;-RUBY</span>
-<span class='tstring_content'>def initialize(foo:, bar: 0)
-  self.foo = foo
-  self.bar = bar
+<span class='tstring_content'>def initialize(number: 0, message:, fruits: [])
+  self.number = number
+  self.message = message
+  self.fruits = fruits
+  bind = self
+  @fruits.singleton_class.send(:define_method, :&lt;&lt;) do |v|
+    bind.send(:&quot;validate_fruits!&quot;, [v])
+    push(v)
+  end
 end
 </span><span class='heredoc_end'>RUBY</span></code></pre>
     
@@ -558,12 +564,12 @@ end
       <pre class="lines">
 
 
-21
-22
-23</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_draw'>draw</span><span class='lparen'>(</span><span class='id identifier rubyid_properties'>properties</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_properties'>properties</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_draw'>draw</span>
@@ -591,7 +597,7 @@ end
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Fixes the default value of a parameter depending on options</p>
+<p>Generates the default value of a parameter depending on options</p>
 
 
   </div>
@@ -606,21 +612,21 @@ end
 <p>when nil is allowed and default is set</p>
 </div></p>
       
-      <pre class="example code"><code><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span> <span class='comment'>#=&gt; &quot; 0&quot;</span></code></pre>
+      <pre class="example code"><code><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> 0</span><span class='tstring_end'>&quot;</span></span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>when nil is allowed and default is not set</p>
 </div></p>
       
-      <pre class="example code"><code><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span> <span class='comment'>#=&gt; &quot; nil&quot;</span></code></pre>
+      <pre class="example code"><code><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> nil</span><span class='tstring_end'>&quot;</span></span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>when nil is not allowed</p>
 </div></p>
       
-      <pre class="example code"><code><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span> <span class='comment'>#=&gt; &quot;&quot;</span></code></pre>
+      <pre class="example code"><code><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span></code></pre>
     
   </div>
 
@@ -644,18 +650,18 @@ end
       <pre class="lines">
 
 
-81
-82
-83
-84
-85
-86
 87
 88
-89</pre>
+89
+90
+91
+92
+93
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_default'>default</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_values_at'>values_at</span><span class='lparen'>(</span><span class='symbol'>:default</span><span class='comma'>,</span> <span class='symbol'>:allow_nil</span><span class='rparen'>)</span>
@@ -723,17 +729,17 @@ end
       <pre class="lines">
 
 
-44
-45
-46
-47
-48
-49
 50
-51</pre>
+51
+52
+53
+54
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_draw'>draw</span>
   <span class='heredoc_beg'>&lt;&lt;-RUBY</span>
@@ -775,7 +781,10 @@ end
 <p>Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }</p>
 </div></p>
       
-      <pre class="example code"><code><span class='id identifier rubyid_initialize_body'>initialize_body</span> <span class='comment'>#=&gt; &quot;self.foo = foo\nself.bar = bar&quot;</span></code></pre>
+      <pre class="example code"><code><span class='heredoc_beg'>&lt;&lt;-RUBY</span>
+<span class='tstring_content'>self.foo = foo
+self.bar = bar
+</span><span class='heredoc_end'>RUBY</span></code></pre>
     
   </div>
 
@@ -799,16 +808,16 @@ end
       <pre class="lines">
 
 
-97
-98
-99
-100
-101
-102
-103</pre>
+106
+107
+108
+109
+110
+111
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 106</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_assignments'>initialize_assignments</span>
   <span class='id identifier rubyid_assignments'>assignments</span> <span class='op'>=</span>
@@ -845,11 +854,7 @@ end
     <p class="tag_title">Examples:</p>
     
       
-        <p class="example_title"><div class='inline'>
-<p>Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_redefine_initialize'>redefine_initialize</span> <span class='comment'>#=&gt; &quot;foo:, bar: 0&quot;</span></code></pre>
+      <pre class="example code"><code><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>foo:, bar: 0</span><span class='tstring_end'>&quot;</span></span></code></pre>
     
   </div>
 
@@ -873,16 +878,16 @@ end
       <pre class="lines">
 
 
-63
-64
-65
-66
-67
-68
-69</pre>
+69
+70
+71
+72
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_parameters'>initialize_parameters</span>
   <span class='id identifier rubyid_parameters'>parameters</span> <span class='op'>=</span>
@@ -915,6 +920,19 @@ end
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='heredoc_beg'>&lt;&lt;-RUBY</span>
+<span class='tstring_content'>@fruits.singleton_class.send(:define_method, :&lt;&lt;) do |v|
+  bind.send(:&quot;validate_fruits!&quot;, [v])
+  push(v)
+end
+</span><span class='heredoc_end'>RUBY</span></code></pre>
+    
+  </div>
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -935,29 +953,23 @@ end
       <pre class="lines">
 
 
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135</pre>
+157
+158
+159
+160
+161
+162
+163
+164
+165</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_push_singleton'>initialize_push_singleton</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='heredoc_beg'>&lt;&lt;-RUBY</span>
-<span class='tstring_content'>  bind = self
-  @</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>.singleton_class.send(:define_method, :&lt;&lt;) do |v|
-    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_type!&quot;, [v])
-    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_inclusion!&quot;, [v])
-    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_assertion!&quot;, [v])
+<span class='tstring_content'>  @</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>.singleton_class.send(:define_method, :&lt;&lt;) do |v|
+    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>!&quot;, [v])
 
     push(v)
   end
@@ -987,6 +999,24 @@ end
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code><span class='heredoc_beg'>&lt;&lt;-RUBY</span>
+<span class='tstring_content'>bind = self
+@fruits.singleton_class.send(:define_method, :&lt;&lt;) do |v|
+  bind.send(:&quot;validate_fruits!&quot;, [v])
+  push(v)
+end
+@numbers.singleton_class.send(:define_method, :&lt;&lt;) do |v|
+  bind.send(:&quot;validate_numbers!&quot;, [v])
+  push(v)
+end
+</span><span class='heredoc_end'>RUBY</span></code></pre>
+    
+  </div>
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1007,31 +1037,37 @@ end
       <pre class="lines">
 
 
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118</pre>
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/initializer.rb', line 130</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_push_singletons'>initialize_push_singletons</span>
   <span class='id identifier rubyid_collections'>collections</span> <span class='op'>=</span>
     <span class='id identifier rubyid_properties'>properties</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>|</span>
       <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:type</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:type</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='const'>Array</span>
     <span class='kw'>end</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_collections'>collections</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+
   <span class='id identifier rubyid_singletons'>singletons</span> <span class='op'>=</span>
     <span class='id identifier rubyid_collections'>collections</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span>
       <span class='id identifier rubyid_initialize_push_singleton'>initialize_push_singleton</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
-  <span class='id identifier rubyid_singletons'>singletons</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='comment'># assign self to a variable so the instance is accessible from the singleton scope
+</span>  <span class='id identifier rubyid_singletons'>singletons</span><span class='period'>.</span><span class='id identifier rubyid_unshift'>unshift</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>bind = self</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1043,7 +1079,7 @@ end
 </div>
 
       <div id="footer">
-  Generated on Fri Oct 16 12:42:50 2020 by
+  Generated on Fri Oct 16 22:46:37 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.6).
 </div>

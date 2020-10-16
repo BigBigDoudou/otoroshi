@@ -130,7 +130,7 @@ describe Otoroshi::Sanctuary do
       it 'validates value is an instance of the class' do
         monkey.property(:number, Integer)
         expect { monkey.new(number: 'hello') }
-          .to raise_error Otoroshi::WrongTypeError, ':number is not an instance of Integer'
+          .to raise_error Otoroshi::TypeError, ':number is not an instance of Integer'
       end
     end
 
@@ -143,7 +143,7 @@ describe Otoroshi::Sanctuary do
         end
 
         it 'validates value is an array' do
-          expect { monkey.new(whatevers: 42) }.to raise_error Otoroshi::NotAnArray, ':whatevers is not an array'
+          expect { monkey.new(whatevers: 42) }.to raise_error Otoroshi::Collection::ArrayError, ':whatevers is not an array'
         end
       end
 
@@ -156,7 +156,7 @@ describe Otoroshi::Sanctuary do
 
         it 'validates each element of the collection is an instance of the class' do
           expect { monkey.new(numbers: [1, 1.5]) }
-            .to raise_error Otoroshi::WrongTypeError, ':numbers contains elements that are not instances of Integer'
+            .to raise_error Otoroshi::Collection::TypeError, ':numbers contains elements that are not instances of Integer'
         end
       end
     end
@@ -172,7 +172,7 @@ describe Otoroshi::Sanctuary do
 
       it 'does not accept ancestor classes' do
         monkey.property(:thing, child)
-        expect { monkey.new(thing: parent.new) }.to raise_error Otoroshi::WrongTypeError, ":thing is not an instance of #{child}"
+        expect { monkey.new(thing: parent.new) }.to raise_error Otoroshi::TypeError, ":thing is not an instance of #{child}"
       end
     end
   end
@@ -181,7 +181,7 @@ describe Otoroshi::Sanctuary do
     it 'validates value is included is the accepted values' do
       monkey.property(:foo, one_of: [:apple, :pear])
       expect { monkey.new(foo: :banana) }
-        .to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [:apple, :pear]'
+        .to raise_error Otoroshi::OneOfError, ':foo is not in [:apple, :pear]'
     end
 
     context 'when type is an array with class' do
@@ -193,7 +193,7 @@ describe Otoroshi::Sanctuary do
 
       it 'validates each element is included is the accepted values' do
         expect { monkey.new(foo: [:apple, :banana]) }
-          .to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [:apple, :pear]'
+          .to raise_error Otoroshi::Collection::OneOfError, ':foo contains elements that are not in [:apple, :pear]'
       end
     end
 
@@ -209,7 +209,7 @@ describe Otoroshi::Sanctuary do
     it 'validates value respects the assertion' do
       monkey.property(:foo, Integer, assert: ->(v) { v > 0 })
       expect { monkey.new(foo: -1) }
-        .to raise_error Otoroshi::AssertionError, ':foo does not respect the assertion'
+        .to raise_error Otoroshi::AssertError, ':foo does not respect the assertion'
     end
 
     context 'when type is an array' do
@@ -221,7 +221,7 @@ describe Otoroshi::Sanctuary do
 
       it 'validates each element respects the assertion' do
         expect { monkey.new(foo: [1, -1]) }
-          .to raise_error Otoroshi::AssertionError, ':foo contains elements that do not respect the assertion'
+          .to raise_error Otoroshi::Collection::AssertError, ':foo contains elements that do not respect the assertion'
       end
     end
   end
@@ -242,7 +242,7 @@ describe Otoroshi::Sanctuary do
       it 'does not apply to each element' do
         monkey.property(:foo, [Integer], allow_nil: true)
         expect { monkey.new(foo: [1, nil]) }
-          .to raise_error Otoroshi::WrongTypeError, ':foo contains elements that are not instances of Integer'
+          .to raise_error Otoroshi::Collection::TypeError, ':foo contains elements that are not instances of Integer'
       end
     end
   end
@@ -274,9 +274,9 @@ describe Otoroshi::Sanctuary do
 
     it 'defines singletons for each array properties' do # rubocop:disable RSpec/MultipleExpectations
       expect { instance.numbers << 1.5 }
-        .to raise_error Otoroshi::WrongTypeError, ':numbers contains elements that are not instances of Integer'
+        .to raise_error Otoroshi::Collection::TypeError, ':numbers contains elements that are not instances of Integer'
       expect { instance.messages << :world }
-        .to raise_error Otoroshi::WrongTypeError, ':messages contains elements that are not instances of String'
+        .to raise_error Otoroshi::Collection::TypeError, ':messages contains elements that are not instances of String'
     end
   end
 end

@@ -133,8 +133,8 @@ class Example
   property :eatable, one_of: [true, false]
 end
 
-# These examples will raise an Otoroshi::NotAcceptedError
-# with message: "eatable is not included in [true, false]"
+# These examples will raise an Otoroshi::OneOfError
+# with message: "eatable is not in [true, false]"
 Example.new(eatable: 'maybe')
 instance.eatable = 'maybe'
 ```
@@ -148,8 +148,8 @@ class Example
   property :fruits, [], one_of: [:apple, :pear]
 end
 
-# These examples will raise an Otoroshi::NotAcceptedError
-# with message: ":fruits contains elements that are not included in [:apple, :pear]"
+# These examples will raise an Otoroshi::OneOfError
+# with message: ":fruits contains elements that are not in [:apple, :pear]"
 Example.new(fruits: [:apple, :banana])
 instance.fruit = [:apple, :banana]
 instance.fruit << :banana
@@ -164,7 +164,7 @@ class Example
   property :quantity, Integer, assert: ->(v) { v > 0 }
 end
 
-# These examples will raise an Otoroshi::AssertionError
+# These examples will raise an Otoroshi::AssertError
 # with message: ":quantity does not respect the assertion"
 Example.new(quantity: -1)
 instance.quantity = -1
@@ -179,7 +179,7 @@ class Example
   property :quantities, [Integer], assert: ->(v) { v > 0 }
 end
 
-# These examples will raise an Otoroshi::NotAcceptedError
+# These examples will raise an Otoroshi::OneOfError
 # with message: ":quantity contains elements that do not respect the assertion"
 Example.new(quantity: [1, -1])
 instance.quantity = [1, -1]

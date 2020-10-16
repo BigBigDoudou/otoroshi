@@ -3,7 +3,7 @@
 require_relative 'initializer'
 
 module Otoroshi
-  # This module is designed to be included in a class. This will provide
+  # This module is designed to be in a class. This will provide
   # the "property" ({Sanctuary::ClassMethods.property}) method for defining class properties.
   #
   # @example
@@ -45,29 +45,33 @@ module Otoroshi
       #   property scores, type: [Integer], assert: ->(v) { v >= 0 }, default: []
       def property(name, type = Object, one_of: nil, assert: ->(_) { true }, allow_nil: false, default: nil)
         add_to_properties(name, type, allow_nil, default)
-        collection = type == Array || type.is_a?(Array)
-        define_validate_type!(name, type, collection, allow_nil)
-        define_validate_inclusion!(name, collection, one_of, allow_nil)
+        expected_type = type.is_a?(Array) ? type.first || Object : type
+        collection = expected_type == Array || type.is_a?(Array)
+        define_validate_type!(name, expected_type, collection, allow_nil)
+        define_validate_one_of!(name, collection, one_of, allow_nil)
         define_validate_assertion!(name, collection, assert, allow_nil)
+        define_validate!(name)
         define_getter(name)
         define_setter(name)
         class_eval Initializer.draw(properties), __FILE__, __LINE__ + 1
       end
 
-      # Returns the class properties
+      # Class properties
       #
       # @return [Hash]
       #
-      # @note this method will be updated by {add_to_properties}
+      # @example
+      #   {
+      #     number: { type: Integer, allow_nil: false, default: 0 },
+      #     message: { type: Integer, allow_nil: true, default: nil }
+      #   }
       def properties
         {}
       end
 
       private
 
-      # Updates {properties} to add new property to the returned ones
-      #
-      # @return [void]
+      # Adds a properties to the {properties}
       def add_to_properties(name, type, allow_nil, default)
         current_state = properties
         current_state[name] = {
@@ -78,155 +82,123 @@ module Otoroshi
         define_singleton_method(:properties) { current_state }
       end
 
-      # Defines a private method that raises an error if type is not respected
+      # Defines a private method that validates type condition
       #
-      # @return [void]
+      #   Given name = :score, type = Integer, allow_nil = false
       #
-      # @example
-      #   define_validate_type!(:score, Integer, false) => def validate_score_type!(value) ...
-      # @example Generated method
-      #   # given name: :score, type: Integer, allow_nil: false
       #   def validate_score_type!(value)
       #     return if Integer.nil? || false && value.nil?
       #     return if value.is_a? Integer
       #
-      #     raise ArgumentError, ":score does not match required type"
+      #     raise Otoroshi::TypeError, :score, Integer
       #   end
       def define_validate_type!(name, type, collection, allow_nil)
-        lambda = type_validation(type)
-        check_collection = ->(v) { v.is_a?(Array) || raise(Otoroshi::NotAnArray, name) }
+        validator = validate_type?(name, type, collection)
         define_method :"validate_#{name}_type!" do |value|
-          return if allow_nil && value.nil?
-
-          collection && check_collection.call(value)
-          return if lambda.call(value)
-
-          raise Otoroshi::WrongTypeError.new(name, type, collection: collection)
+          allow_nil && value.nil? || validator.call(value)
         end
         private :"validate_#{name}_type!"
       end
 
-      # Defines a lambda to be called to validate that value matches the type
-      #
-      # @return [Proc] the lambda to use in order to test that the value matches the type
-      #
-      # @example
-      #   type_validation(Integer) #=> ->(v) { v.is_a? Integer }
-      # @example
-      #   type_validation([String, Symbol]) #=> ->(v) { [String, Symbol].any? { |t| v.is_a? t } }
-      #
-      # @note params are used for binding in define_method scope
-      def type_validation(type)
-        if type == Array
-          # no expected type for each element, return nil
-          ->(_) {}
-        elsif type.is_a?(Array)
-          # get the real expected type
-          # e.g. if type is [Integer] then element_type should be Integer
-          # e.g. if type is [] then element_type should be Object
-          element_type = type.first || Object
-          # apply type_validation lambda on each element
-          ->(v) { v.all? { |e| type_validation(element_type).call(e) } }
+      # Lambda that validates (value) respects the type condition
+      # @return [Proc]
+      def validate_type?(name, type, collection)
+        if collection
+          # validate each element of (v) is an instance of the type
+          lambda do |v|
+            v.is_a?(Array) || raise(Otoroshi::Collection::ArrayError, name)
+            v.all? { |elt| elt.is_a? type } || raise(Otoroshi::Collection::TypeError.new(name, type))
+          end
         else
-          # check the value matches the type
-          ->(v) { v.is_a? type }
+          # validate (v) is an instance of the type
+          ->(v) { v.is_a?(type) || raise(Otoroshi::TypeError.new(name, type)) }
         end
       end
 
-      # Defines a private method that raises an error if value is not included in the accepted ones
+      # Defines a private method that validates one_of condition
       #
-      # @return [void]
+      #   Given name = :side, collection = false, one_of = [:left, :right], allow_nil = false
       #
-      # @example
-      #   # given @name = :side
-      #   define_validate_inclusion!(:side, ...) => def validate_side_type!(value) ...
-      # @example Generated method
-      #   # given name: :side, collection: false, one_of: [:left, :right], allow_nil: false
       #   def validate_side_type!(value)
       #     return if false && value.nil?
       #     return if [:left, :right].include? value
       #
-      #     raise ArgumentError, ":side is not included in accepted values"
+      #     raise Otoroshi::OneOfError, :side, [:left, :right]
       #   end
-      def define_validate_inclusion!(name, collection, one_of, allow_nil)
-        validator = collection ? each_inside?(name, one_of) : inside?(name, one_of)
-        if one_of
-          define_method(:"validate_#{name}_inclusion!") do |value|
-            allow_nil && value.nil? || validator.call(value)
+      def define_validate_one_of!(name, collection, one_of, allow_nil)
+        validator = validate_one_of?(name, one_of, collection)
+        define_method(:"validate_#{name}_one_of!") do |value|
+          allow_nil && value.nil? || validator.call(value)
+        end
+        private :"validate_#{name}_one_of!"
+      end
+
+      # Lambda that validates (value) respects the one_of condition
+      # @return [Proc]
+      def validate_one_of?(name, one_of, collection)
+        return ->(_) {} unless one_of
+
+        if collection
+          lambda do |v|
+            v.all? { |e| one_of.include? e } || raise(Otoroshi::Collection::OneOfError.new(name, one_of))
           end
         else
-          define_method(:"validate_#{name}_inclusion!") { |_| }
-        end
-        private :"validate_#{name}_inclusion!"
-      end
-
-      # Defines a lambda to be called to validate that value is included in accepted ones
-      #
-      # @return [Proc] the lambda to use in order to test that value is included in accepted ones
-      def inside?(name, one_of)
-        lambda do |v|
-          one_of.include?(v) || raise(Otoroshi::NotAcceptedError.new(name, one_of))
+          lambda do |v|
+            one_of.include?(v) || raise(Otoroshi::OneOfError.new(name, one_of))
+          end
         end
       end
 
-      # Defines a lambda to be called to validate that each value is included in accepted ones
+      # Defines a private method that validates assert condition
       #
-      # @return [Proc] the lambda to use in order to test that each value is included in accepted ones
-      def each_inside?(name, one_of)
-        lambda do |v|
-          v.all? { |e| one_of.include? e } || raise(Otoroshi::NotAcceptedError.new(name, one_of, collection: true))
-        end
-      end
-
-      # Defines a private method that raises an error if assert lambda returns false
+      #   Given name = :score, assert = ->(v) { v >= 0 }, allow_nil = false
       #
-      # @return [void]
-      #
-      # @example
-      #   define_validate_assertion!(:score, ...) #=> def validate_score_assertion!(value) ...
-      # @example Generated instance method
-      #   # given name: :score, assert: >(v) { v >= 0 }, allow_nil: false
       #   def validate_score_assertion!(value)
       #     return if false && value.nil?
       #     return if value >= 0
       #
-      #     raise ArgumentError, ":score does not match validation"
+      #     raise Otoroshi::AssertError, :score
       #   end
       def define_validate_assertion!(name, collection, assert, allow_nil)
-        validator = collection ? each_assert?(name, assert) : assert?(name, assert)
+        validator = validate_assert?(name, assert, collection)
         define_method :"validate_#{name}_assertion!" do |value|
           allow_nil && value.nil? || validator.call(value)
         end
         private :"validate_#{name}_assertion!"
       end
 
-      # Defines a lambda to be called to validate that value respects the specific
-      #
-      # @return [Proc] the lambda to use in order to test that value respects the specific
-      def assert?(name, assert)
-        lambda do |value|
-          instance_exec(value, &assert) || raise(Otoroshi::AssertionError, name)
+      # Lambda that validates (value) respects the assert condition
+      # @return [Proc]
+      def validate_assert?(name, assert, collection)
+        if collection
+          ->(v) { v.all? { |e| instance_exec(e, &assert) } || raise(Otoroshi::Collection::AssertError, name) }
+        else
+          ->(v) { instance_exec(v, &assert) || raise(Otoroshi::AssertError, name) }
         end
       end
 
-      # Defines a lambda to be called to validate that value respects the specific
+      # Defines a private method that calls all validations
       #
-      # @return [Proc] the lambda to use in order to test that each value respects the specific
-      def each_assert?(name, assert)
-        lambda do |value|
-          value.all? { |e| instance_exec(e, &assert) } ||
-            raise(Otoroshi::AssertionError.new(name, collection: true))
+      #   Given name = :score
+      #
+      #   def validate_score!(value)
+      #     validate_score_type!(value)
+      #     validate_score_one_of!(value)
+      #     validate_score_assert(value)
+      #   end
+      def define_validate!(name)
+        define_method :"validate_#{name}!" do |value|
+          __send__(:"validate_#{name}_type!", value)
+          __send__(:"validate_#{name}_one_of!", value)
+          __send__(:"validate_#{name}_assertion!", value)
         end
+        private :"validate_#{name}!"
       end
 
-      # Defines a getter method for the property
+      # Defines a getter
       #
-      # @return [void]
+      #   Given name = :score
       #
-      # @example
-      #   define_getter(:score) #=> def score ...
-      # @example Generated instance method
-      #   # given name: :score
       #   def score
       #     instance_variable_get(@score)
       #   end
@@ -234,14 +206,10 @@ module Otoroshi
         define_method(name) { instance_variable_get("@#{name}") }
       end
 
-      # Defines a setter method for the property
+      # Defines a setter
       #
-      # @return [void]
+      #   Given name = :score
       #
-      # @example
-      #   define_setter(:score) #=> def score=(value) ...
-      # @example Generated instance method
-      #   # given name: :score
       #   def score=(value)
       #     validate_score_type!(value)
       #     validate_score!(value)
@@ -249,9 +217,7 @@ module Otoroshi
       #   end
       def define_setter(name)
         define_method :"#{name}=" do |value|
-          __send__(:"validate_#{name}_type!", value)
-          __send__(:"validate_#{name}_inclusion!", value)
-          __send__(:"validate_#{name}_assertion!", value)
+          __send__(:"validate_#{name}!", value)
           instance_variable_set("@#{name}", value)
         end
       end

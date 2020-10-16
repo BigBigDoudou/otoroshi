@@ -193,8 +193,8 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:eatable</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='kw'>true</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::NotAcceptedError
-</span><span class='comment'># with message: &quot;eatable is not included in [true, false]&quot;
+<span class='comment'># These examples will raise an Otoroshi::OneOfError
+</span><span class='comment'># with message: &quot;eatable is not in [true, false]&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>eatable:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maybe</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_eatable'>eatable</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maybe</span><span class='tstring_end'>&#39;</span></span>
 </code></pre>
@@ -207,8 +207,8 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:fruits</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:pear</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::NotAcceptedError
-</span><span class='comment'># with message: &quot;:fruits contains elements that are not included in [:apple, :pear]&quot;
+<span class='comment'># These examples will raise an Otoroshi::OneOfError
+</span><span class='comment'># with message: &quot;:fruits contains elements that are not in [:apple, :pear]&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>fruits:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:banana</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruit'>fruit</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:banana</span><span class='rbracket'>]</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruit'>fruit</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:banana</span>
@@ -222,7 +222,7 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::AssertionError
+<span class='comment'># These examples will raise an Otoroshi::AssertError
 </span><span class='comment'># with message: &quot;:quantity does not respect the assertion&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='op'>-</span><span class='int'>1</span>
@@ -236,7 +236,7 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantities</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Integer</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::NotAcceptedError
+<span class='comment'># These examples will raise an Otoroshi::OneOfError
 </span><span class='comment'># with message: &quot;:quantity contains elements that do not respect the assertion&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
@@ -296,7 +296,11 @@ instance.message = [nil]
 
 <h2 id="refactor-example">Refactor Example</h2>
 
-<h3 id="before-refactor-28-lines-dedicated-to-properties">Before refactor (28 lines dedicated to properties)</h3>
+<h3 id="before-refactor">Before refactor</h3>
+
+<blockquote>
+<p>28 lines dedicated to properties</p>
+</blockquote>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Importer</span>
   <span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:file_path</span><span class='comma'>,</span> <span class='symbol'>:headers</span><span class='comma'>,</span> <span class='symbol'>:col_sep</span><span class='comma'>,</span> <span class='symbol'>:converters</span><span class='comma'>,</span> <span class='symbol'>:columns</span>
@@ -345,7 +349,11 @@ instance.message = [nil]
 <span class='kw'>end</span>
 </code></pre>
 
-<h3 id="after-refactor-with-otoroshi-6-lines-dedicated-to-properties">After refactor with Otoroshi (6 lines dedicated to properties)</h3>
+<h3 id="after-refactor-with-otoroshi">After refactor with Otoroshi</h3>
+
+<blockquote>
+<p>6 lines dedicated to properties</p>
+</blockquote>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Importer</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
@@ -364,7 +372,7 @@ instance.message = [nil]
 </div></div>
 
       <div id="footer">
-  Generated on Fri Oct 16 12:42:49 2020 by
+  Generated on Fri Oct 16 22:46:36 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.6).
 </div>
