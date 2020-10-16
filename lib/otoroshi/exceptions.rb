@@ -9,11 +9,11 @@ module Otoroshi
     #
     # @param property [Symbol] name of the property
     # @param type [Class] class to match
-    # @param array [true, false] define if it is an array
-    def initialize(property, type, array: false)
+    # @param collection [true, false] define if it is a collection
+    def initialize(property, type, collection: false)
       expected_type = type.is_a?(Array) ? type.first || Object : type
       msg =
-        if array
+        if collection
           ":#{property} contains elements that are not instances of #{expected_type}"
         else
           ":#{property} is not an instance of #{expected_type}"
@@ -22,7 +22,7 @@ module Otoroshi
     end
   end
 
-  # Manages errors raised when value should be an array
+  # Manages errors raised when value should be an collection
   class NotAnArray < Error
     # Initialize an error
     #
@@ -39,13 +39,13 @@ module Otoroshi
     #
     # @param property [Symbol] name of the property
     # @param accepted_values [Array] accepted values
-    # @param array [true, false] define if it is an array
-    def initialize(property, accepted_values, array: false)
+    # @param collection [true, false] define if it is an collection
+    def initialize(property, accepted_values, collection: false)
       # reintegrate the colon for symbols which is lost during interpolation
       to_s = ->(v) { v.is_a?(Symbol) ? ":#{v}" : v }
       accepted_values_list = accepted_values.map { |v| to_s.call(v) }.join(', ')
       msg =
-        if array
+        if collection
           ":#{property} contains elements that are not included in [#{accepted_values_list}]"
         else
           ":#{property} is not included in [#{accepted_values_list}]"
@@ -59,10 +59,10 @@ module Otoroshi
     # Initialize an error
     #
     # @param property [Symbol] name of the property
-    # @param array [true, false] define if it is an array
-    def initialize(property, array: false)
+    # @param collection [true, false] define if it is an collection
+    def initialize(property, collection: false)
       msg =
-        if array
+        if collection
           ":#{property} contains elements that do not respect the assertion"
         else
           ":#{property} does not respect the assertion"

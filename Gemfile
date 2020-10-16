@@ -5,10 +5,11 @@ source 'https://rubygems.org'
 group :development, :test do
   gem 'pry'
   gem 'rubocop'
+  gem 'rubocop-rspec'
   gem 'yard'
 end
 
 group :test do
-  gem 'coverage'
   gem 'rspec'
+  gem 'simplecov', require: false, group: :test
 end

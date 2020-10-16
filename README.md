@@ -27,6 +27,8 @@ $ bundle
 Include `Otoroshi::Sanctuary` in a class to easily define arguments validation.
 
 ```ruby
+require 'otoroshi'
+
 class MyClass
   include Otoroshi::Sanctuary
 end

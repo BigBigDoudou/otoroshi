@@ -112,7 +112,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#add_to_properties-instance_method" title="#add_to_properties (instance method)">#<strong>add_to_properties</strong>(name, type, one_of, assert, allow_nil, default)  &#x21d2; void </a>
+      <a href="#add_to_properties-instance_method" title="#add_to_properties (instance method)">#<strong>add_to_properties</strong>(name, type, allow_nil, default)  &#x21d2; void </a>
     
 
     
@@ -152,54 +152,6 @@
   
     <span class="summary_desc"><div class='inline'>
 <p>Defines a lambda to be called to validate that value respects the specific.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#collection%3F-instance_method" title="#collection? (instance method)">#<strong>collection?</strong>(type)  &#x21d2; true, false </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Checks the type is an array.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="private ">
-  <span class="summary_signature">
-    
-      <a href="#default_parameter_for-instance_method" title="#default_parameter_for (instance method)">#<strong>default_parameter_for</strong>(allow_nil, default)  &#x21d2; String </a>
-    
-
-    
-  </span>
-  
-  
-  
-  <span class="note title private">private</span>
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Fixes the default value of a parameter depending on options.</p>
 </div></span>
   
 </li>
@@ -256,7 +208,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#define_validate_assertion!-instance_method" title="#define_validate_assertion! (instance method)">#<strong>define_validate_assertion!</strong>(name, type, assert, allow_nil)  &#x21d2; void </a>
+      <a href="#define_validate_assertion!-instance_method" title="#define_validate_assertion! (instance method)">#<strong>define_validate_assertion!</strong>(name, collection, assert, allow_nil)  &#x21d2; void </a>
     
 
     
@@ -280,7 +232,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#define_validate_inclusion!-instance_method" title="#define_validate_inclusion! (instance method)">#<strong>define_validate_inclusion!</strong>(name, type, values, allow_nil)  &#x21d2; void </a>
+      <a href="#define_validate_inclusion!-instance_method" title="#define_validate_inclusion! (instance method)">#<strong>define_validate_inclusion!</strong>(name, collection, one_of, allow_nil)  &#x21d2; void </a>
     
 
     
@@ -304,7 +256,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#define_validate_type!-instance_method" title="#define_validate_type! (instance method)">#<strong>define_validate_type!</strong>(name, type, allow_nil)  &#x21d2; void </a>
+      <a href="#define_validate_type!-instance_method" title="#define_validate_type! (instance method)">#<strong>define_validate_type!</strong>(name, type, collection, allow_nil)  &#x21d2; void </a>
     
 
     
@@ -328,7 +280,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#each_assert%3F-instance_method" title="#each_assert? (instance method)">#<strong>each_assert?</strong>(name, validate)  &#x21d2; Proc </a>
+      <a href="#each_assert%3F-instance_method" title="#each_assert? (instance method)">#<strong>each_assert?</strong>(name, assert)  &#x21d2; Proc </a>
     
 
     
@@ -352,7 +304,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#each_inside%3F-instance_method" title="#each_inside? (instance method)">#<strong>each_inside?</strong>(name, values)  &#x21d2; Proc </a>
+      <a href="#each_inside%3F-instance_method" title="#each_inside? (instance method)">#<strong>each_inside?</strong>(name, one_of)  &#x21d2; Proc </a>
     
 
     
@@ -376,103 +328,7 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#initialize_assignments-instance_method" title="#initialize_assignments (instance method)">#<strong>initialize_assignments</strong>  &#x21d2; String </a>
-    
-
-    
-  </span>
-  
-  
-  
-  <span class="note title private">private</span>
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Generates initialize method assignments.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="private ">
-  <span class="summary_signature">
-    
-      <a href="#initialize_parameters-instance_method" title="#initialize_parameters (instance method)">#<strong>initialize_parameters</strong>  &#x21d2; String </a>
-    
-
-    
-  </span>
-  
-  
-  
-  <span class="note title private">private</span>
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Generates initialize method parameters.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="private ">
-  <span class="summary_signature">
-    
-      <a href="#initialize_push_singleton-instance_method" title="#initialize_push_singleton (instance method)">#<strong>initialize_push_singleton</strong>(name)  &#x21d2; String </a>
-    
-
-    
-  </span>
-  
-  
-  
-  <span class="note title private">private</span>
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Generates singleton on array instance variable to overide &lt;&lt; so value is validated before being added to the array.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="private ">
-  <span class="summary_signature">
-    
-      <a href="#initialize_push_singletons-instance_method" title="#initialize_push_singletons (instance method)">#<strong>initialize_push_singletons</strong>  &#x21d2; String </a>
-    
-
-    
-  </span>
-  
-  
-  
-  <span class="note title private">private</span>
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Generates push singleton for each array property.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="private ">
-  <span class="summary_signature">
-    
-      <a href="#inside%3F-instance_method" title="#inside? (instance method)">#<strong>inside?</strong>(name, values)  &#x21d2; Proc </a>
+      <a href="#inside%3F-instance_method" title="#inside? (instance method)">#<strong>inside?</strong>(name, one_of)  &#x21d2; Proc </a>
     
 
     
@@ -544,30 +400,6 @@
         <li class="private ">
   <span class="summary_signature">
     
-      <a href="#redefine_initialize-instance_method" title="#redefine_initialize (instance method)">#<strong>redefine_initialize</strong>  &#x21d2; void </a>
-    
-
-    
-  </span>
-  
-  
-  
-  <span class="note title private">private</span>
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Redefines initialize method.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="private ">
-  <span class="summary_signature">
-    
       <a href="#type_validation-instance_method" title="#type_validation (instance method)">#<strong>type_validation</strong>(type)  &#x21d2; Proc </a>
     
 
@@ -601,7 +433,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="add_to_properties-instance_method">
   
-    #<strong>add_to_properties</strong>(name, type, one_of, assert, allow_nil, default)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
+    #<strong>add_to_properties</strong>(name, type, allow_nil, default)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
   
 
   
@@ -624,27 +456,23 @@
       <pre class="lines">
 
 
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96</pre>
+71
+72
+73
+74
+75
+76
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 71</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_add_to_properties'>add_to_properties</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Metrics/ParameterLists
-</span>  <span class='id identifier rubyid_current_state'>current_state</span> <span class='op'>=</span> <span class='id identifier rubyid_properties'>properties</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_add_to_properties'>add_to_properties</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_current_state'>current_state</span> <span class='op'>=</span> <span class='id identifier rubyid_properties'>properties</span>
   <span class='id identifier rubyid_current_state'>current_state</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span>
     <span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span>
-    <span class='label'>one_of:</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span>
-    <span class='label'>assert:</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span>
     <span class='label'>allow_nil:</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span>
     <span class='label'>default:</span> <span class='id identifier rubyid_default'>default</span>
   <span class='rbrace'>}</span>
@@ -673,43 +501,7 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>assert</span>
-      
-      
-        <span class='type'>(<tt>Proc</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>a lambda processing the value and returning true or false</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -735,201 +527,18 @@
       <pre class="lines">
 
 
-244
-245
-246
-247
-248
-249
-250</pre>
+206
+207
+208
+209
+210</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 244</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 206</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert?'>assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
-    <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_instance_exec'>instance_exec</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span>
-
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../AssertionError.html" title="Otoroshi::AssertionError (class)">AssertionError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="collection?-instance_method">
-  
-    #<strong>collection?</strong>(type)  &#x21d2; <tt>true</tt>, <tt>false</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Checks the type is an array</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>type</span>
-      
-      
-        <span class='type'>(<tt>Class</tt>, <tt>Array&lt;Class&gt;</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the tested type</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-68
-69
-70</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 68</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_collection?'>collection?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'>Array</span> <span class='op'>||</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="default_parameter_for-instance_method">
-  
-    #<strong>default_parameter_for</strong>(allow_nil, default)  &#x21d2; <tt>String</tt>  <span class="extras">(private)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Fixes the default value of a parameter depending on options</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-  <div class="examples">
-    <p class="tag_title">Examples:</p>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>when nil is allowed and default is set</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span><span class='lparen'>(</span><span class='kw'>true</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span> <span class='comment'>#=&gt; &quot; 0&quot;</span></code></pre>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>when nil is allowed and default is not set</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span><span class='lparen'>(</span><span class='kw'>true</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='comment'>#=&gt; &quot; nil&quot;</span></code></pre>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>when nil is not allowed</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span><span class='lparen'>(</span><span class='kw'>false</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='comment'>#=&gt; &quot;&quot;</span></code></pre>
-    
-  </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>options</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-352
-353
-354
-355
-356
-357
-358
-359</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 352</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span><span class='lparen'>(</span><span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_default'>default</span>
-    <span class='id identifier rubyid_symbol_prefix'>symbol_prefix</span> <span class='op'>=</span> <span class='id identifier rubyid_default'>default</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>:</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_symbol_prefix'>symbol_prefix</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_default'>default</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_allow_nil'>allow_nil</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> nil</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
+    <span class='id identifier rubyid_instance_exec'>instance_exec</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../AssertionError.html" title="Otoroshi::AssertionError (class)">AssertionError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -967,31 +576,12 @@
 <p>Generated instance method</p>
 </div></p>
       
-      <pre class="example code"><code><span class='kw'>def</span> <span class='id identifier rubyid_score'>score</span>
+      <pre class="example code"><code><span class='comment'># given name: :score
+</span><span class='kw'>def</span> <span class='id identifier rubyid_score'>score</span>
   <span class='id identifier rubyid_instance_variable_get'>instance_variable_get</span><span class='lparen'>(</span><span class='ivar'>@score</span><span class='rparen'>)</span>
 <span class='kw'>end</span></code></pre>
     
   </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-</ul>
 
 
 </div><table class="source_code">
@@ -1000,12 +590,12 @@
       <pre class="lines">
 
 
-278
-279
-280</pre>
+233
+234
+235</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 278</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 233</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_define_getter'>define_getter</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_method'>define_method</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_instance_variable_get'>instance_variable_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>@</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -1038,40 +628,21 @@
     <p class="tag_title">Examples:</p>
     
       
-      <pre class="example code"><code><span class='id identifier rubyid_define_getter'>define_getter</span><span class='lparen'>(</span><span class='symbol'>:score</span><span class='rparen'>)</span> <span class='comment'>#=&gt; def score=(value) ...</span></code></pre>
+      <pre class="example code"><code><span class='id identifier rubyid_define_setter'>define_setter</span><span class='lparen'>(</span><span class='symbol'>:score</span><span class='rparen'>)</span> <span class='comment'>#=&gt; def score=(value) ...</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Generated instance method</p>
 </div></p>
       
-      <pre class="example code"><code><span class='kw'>def</span> <span class='id identifier rubyid_score='>score=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+      <pre class="example code"><code><span class='comment'># given name: :score
+</span><span class='kw'>def</span> <span class='id identifier rubyid_score='>score=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_score_type!'>validate_score_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_score!'>validate_score!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_instance_variable_set'>instance_variable_set</span><span class='lparen'>(</span><span class='ivar'>@score</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
 <span class='kw'>end</span></code></pre>
     
   </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-</ul>
 
 
 </div><table class="source_code">
@@ -1080,17 +651,17 @@
       <pre class="lines">
 
 
-296
-297
-298
-299
-300
-301
-302
-303</pre>
+250
+251
+252
+253
+254
+255
+256
+257</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 296</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 250</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_define_setter'>define_setter</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_method'>define_method</span> <span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
@@ -1108,7 +679,7 @@
       <div class="method_details ">
   <h3 class="signature " id="define_validate_assertion!-instance_method">
   
-    #<strong>define_validate_assertion!</strong>(name, type, assert, allow_nil)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
+    #<strong>define_validate_assertion!</strong>(name, collection, assert, allow_nil)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
   
 
   
@@ -1128,14 +699,15 @@
     <p class="tag_title">Examples:</p>
     
       
-      <pre class="example code"><code><span class='id identifier rubyid_define_validate_assertion!'>define_validate_assertion!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>score</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;=</span> <span class='int'>0</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span> <span class='comment'>#=&gt; def validate_score_assertion!(value) ...</span></code></pre>
+      <pre class="example code"><code>define_validate_assertion!(:score, ...) #=&gt; def validate_score_assertion!(value) ...</code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Generated instance method</p>
 </div></p>
       
-      <pre class="example code"><code><span class='kw'>def</span> <span class='id identifier rubyid_validate_score_assertion!'>validate_score_assertion!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+      <pre class="example code"><code><span class='comment'># given name: :score, assert: &gt;(v) { v &gt;= 0 }, allow_nil: false
+</span><span class='kw'>def</span> <span class='id identifier rubyid_validate_score_assertion!'>validate_score_assertion!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='kw'>false</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>&gt;=</span> <span class='int'>0</span>
 
@@ -1143,58 +715,6 @@
 <span class='kw'>end</span></code></pre>
     
   </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>assert</span>
-      
-      
-        <span class='type'>(<tt>Proc</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>a lambda processing the value and returning true or false</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>allow_nil</span>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>allow nil as a value</p>
-</div>
-      
-    </li>
-  
-</ul>
 
 
 </div><table class="source_code">
@@ -1203,19 +723,19 @@
       <pre class="lines">
 
 
-230
-231
-232
-233
-234
-235
-236</pre>
+195
+196
+197
+198
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 230</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 195</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_define_validate_assertion!'>define_validate_assertion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_validator'>validator</span> <span class='op'>=</span> <span class='id identifier rubyid_collection?'>collection?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_each_assert?'>each_assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_assert?'>assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_define_validate_assertion!'>define_validate_assertion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_validator'>validator</span> <span class='op'>=</span> <span class='id identifier rubyid_collection'>collection</span> <span class='op'>?</span> <span class='id identifier rubyid_each_assert?'>each_assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_assert?'>assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_method'>define_method</span> <span class='symbol'>:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_assertion!</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
     <span class='id identifier rubyid_allow_nil'>allow_nil</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_validator'>validator</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
@@ -1229,7 +749,7 @@
       <div class="method_details ">
   <h3 class="signature " id="define_validate_inclusion!-instance_method">
   
-    #<strong>define_validate_inclusion!</strong>(name, type, values, allow_nil)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
+    #<strong>define_validate_inclusion!</strong>(name, collection, one_of, allow_nil)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
   
 
   
@@ -1249,14 +769,16 @@
     <p class="tag_title">Examples:</p>
     
       
-      <pre class="example code"><code>define_validate_inclusion!(side, [:left, :right], false) =&gt; def validate_side_type!(value) ...</code></pre>
+      <pre class="example code"><code># given @name = :side
+define_validate_inclusion!(:side, ...) =&gt; def validate_side_type!(value) ...</code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Generated method</p>
 </div></p>
       
-      <pre class="example code"><code><span class='kw'>def</span> <span class='id identifier rubyid_validate_side_type!'>validate_side_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+      <pre class="example code"><code><span class='comment'># given name: :side, collection: false, one_of: [:left, :right], allow_nil: false
+</span><span class='kw'>def</span> <span class='id identifier rubyid_validate_side_type!'>validate_side_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='kw'>false</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='symbol'>:left</span><span class='comma'>,</span> <span class='symbol'>:right</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_value'>value</span>
 
@@ -1264,74 +786,6 @@
 <span class='kw'>end</span></code></pre>
     
   </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>array</span>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>define if the value is an array</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>values</span>
-      
-      
-        <span class='type'>(<tt>Array</tt>, <tt>nil</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the values to test against</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>allow_nil</span>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>allow nil as a value</p>
-</div>
-      
-    </li>
-  
-</ul>
 
 
 </div><table class="source_code">
@@ -1340,24 +794,24 @@
       <pre class="lines">
 
 
-177
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187</pre>
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 151</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_define_validate_inclusion!'>define_validate_inclusion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_validator'>validator</span> <span class='op'>=</span> <span class='id identifier rubyid_collection?'>collection?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_each_inside?'>each_inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_inside?'>inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_values'>values</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_define_validate_inclusion!'>define_validate_inclusion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_validator'>validator</span> <span class='op'>=</span> <span class='id identifier rubyid_collection'>collection</span> <span class='op'>?</span> <span class='id identifier rubyid_each_inside?'>each_inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_inside?'>inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_one_of'>one_of</span>
     <span class='id identifier rubyid_define_method'>define_method</span><span class='lparen'>(</span><span class='symbol'>:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_inclusion!</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
       <span class='id identifier rubyid_allow_nil'>allow_nil</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_validator'>validator</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
@@ -1374,7 +828,7 @@
       <div class="method_details ">
   <h3 class="signature " id="define_validate_type!-instance_method">
   
-    #<strong>define_validate_type!</strong>(name, type, allow_nil)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
+    #<strong>define_validate_type!</strong>(name, type, collection, allow_nil)  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
   
 
   
@@ -1394,14 +848,15 @@
     <p class="tag_title">Examples:</p>
     
       
-      <pre class="example code"><code>define_validate_type!(score, Integer, false) =&gt; def validate_score_type!(value) ...</code></pre>
+      <pre class="example code"><code>define_validate_type!(:score, Integer, false) =&gt; def validate_score_type!(value) ...</code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Generated method</p>
 </div></p>
       
-      <pre class="example code"><code><span class='kw'>def</span> <span class='id identifier rubyid_validate_score_type!'>validate_score_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+      <pre class="example code"><code><span class='comment'># given name: :score, type: Integer, allow_nil: false
+</span><span class='kw'>def</span> <span class='id identifier rubyid_validate_score_type!'>validate_score_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='const'>Integer</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='kw'>false</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Integer</span>
 
@@ -1409,74 +864,6 @@
 <span class='kw'>end</span></code></pre>
     
   </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>type</span>
-      
-      
-        <span class='type'>(<tt>Class</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the type to test against</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>array</span>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>define if the value is an array</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>allow_nil</span>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>allow nil as a value</p>
-</div>
-      
-    </li>
-  
-</ul>
 
 
 </div><table class="source_code">
@@ -1485,35 +872,33 @@
       <pre class="lines">
 
 
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129</pre>
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 95</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_define_validate_type!'>define_validate_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_define_validate_type!'>define_validate_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_lambda'>lambda</span> <span class='op'>=</span> <span class='id identifier rubyid_type_validation'>type_validation</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_is_array'>is_array</span> <span class='op'>=</span> <span class='id identifier rubyid_collection?'>collection?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_check_array'>check_array</span> <span class='op'>=</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../NotAnArray.html" title="Otoroshi::NotAnArray (class)">NotAnArray</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_check_collection'>check_collection</span> <span class='op'>=</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../NotAnArray.html" title="Otoroshi::NotAnArray (class)">NotAnArray</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_define_method'>define_method</span> <span class='symbol'>:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_type!</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
     <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
-    <span class='id identifier rubyid_is_array'>is_array</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_check_array'>check_array</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_collection'>collection</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_check_collection'>check_collection</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
     <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_lambda'>lambda</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
 
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../WrongTypeError.html" title="Otoroshi::WrongTypeError (class)">WrongTypeError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../WrongTypeError.html#initialize-instance_method" title="Otoroshi::WrongTypeError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>array:</span> <span class='id identifier rubyid_is_array'>is_array</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../WrongTypeError.html" title="Otoroshi::WrongTypeError (class)">WrongTypeError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../WrongTypeError.html#initialize-instance_method" title="Otoroshi::WrongTypeError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>collection:</span> <span class='id identifier rubyid_collection'>collection</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_private'>private</span> <span class='symbol'>:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_type!</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
@@ -1525,7 +910,7 @@
       <div class="method_details ">
   <h3 class="signature " id="each_assert?-instance_method">
   
-    #<strong>each_assert?</strong>(name, validate)  &#x21d2; <tt>Proc</tt>  <span class="extras">(private)</span>
+    #<strong>each_assert?</strong>(name, assert)  &#x21d2; <tt>Proc</tt>  <span class="extras">(private)</span>
   
 
   
@@ -1540,43 +925,7 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>validate</span>
-      
-      
-        <span class='type'>(<tt>Proc</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>a lambda processing the value and returning true or false</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1602,22 +951,20 @@
       <pre class="lines">
 
 
-258
-259
-260
-261
-262
-263
-264</pre>
+215
+216
+217
+218
+219
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 258</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 215</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_each_assert?'>each_assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_validate'>validate</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_each_assert?'>each_assert?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
-    <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_instance_exec'>instance_exec</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validate'>validate</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../AssertionError.html" title="Otoroshi::AssertionError (class)">AssertionError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../AssertionError.html#initialize-instance_method" title="Otoroshi::AssertionError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>array:</span> <span class='kw'>true</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_instance_exec'>instance_exec</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_assert'>assert</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='op'>||</span>
+      <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../AssertionError.html" title="Otoroshi::AssertionError (class)">AssertionError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../AssertionError.html#initialize-instance_method" title="Otoroshi::AssertionError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>collection:</span> <span class='kw'>true</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1628,7 +975,7 @@
       <div class="method_details ">
   <h3 class="signature " id="each_inside?-instance_method">
   
-    #<strong>each_inside?</strong>(name, values)  &#x21d2; <tt>Proc</tt>  <span class="extras">(private)</span>
+    #<strong>each_inside?</strong>(name, one_of)  &#x21d2; <tt>Proc</tt>  <span class="extras">(private)</span>
   
 
   
@@ -1643,43 +990,7 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>values</span>
-      
-      
-        <span class='type'>(<tt>Array</tt>, <tt>nil</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the values to test against</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1705,293 +1016,19 @@
       <pre class="lines">
 
 
-207
-208
-209
-210
-211</pre>
+175
+176
+177
+178
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 207</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 175</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_each_inside?'>each_inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_each_inside?'>each_inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span>
-    <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../NotAcceptedError.html" title="Otoroshi::NotAcceptedError (class)">NotAcceptedError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../NotAcceptedError.html#initialize-instance_method" title="Otoroshi::NotAcceptedError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='comma'>,</span> <span class='label'>array:</span> <span class='kw'>true</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../NotAcceptedError.html" title="Otoroshi::NotAcceptedError (class)">NotAcceptedError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../NotAcceptedError.html#initialize-instance_method" title="Otoroshi::NotAcceptedError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span> <span class='label'>collection:</span> <span class='kw'>true</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="initialize_assignments-instance_method">
-  
-    #<strong>initialize_assignments</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(private)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Generates initialize method assignments</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-  <div class="examples">
-    <p class="tag_title">Examples:</p>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_initialize_body'>initialize_body</span> <span class='comment'>#=&gt; &quot;self.foo = foo\nself.bar = bar&quot;</span></code></pre>
-    
-  </div>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-367
-368
-369</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 367</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize_assignments'>initialize_assignments</span>
-  <span class='id identifier rubyid_properties'>properties</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>self.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> = </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="initialize_parameters-instance_method">
-  
-    #<strong>initialize_parameters</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(private)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Generates initialize method parameters</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-  <div class="examples">
-    <p class="tag_title">Examples:</p>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>Given properties { foo: { allow_nil: false, default: nil }, { allow_nil: true, default: 0 } }</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_redefine_initialize'>redefine_initialize</span> <span class='comment'>#=&gt; &quot;foo:, bar: 0&quot;</span></code></pre>
-    
-  </div>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-331
-332
-333
-334
-335
-336
-337
-338</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 331</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize_parameters'>initialize_parameters</span>
-  <span class='id identifier rubyid_parameters'>parameters</span> <span class='op'>=</span>
-    <span class='id identifier rubyid_properties'>properties</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>|</span>
-      <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_default_parameter_for'>default_parameter_for</span><span class='lparen'>(</span><span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
-  <span class='id identifier rubyid_parameters'>parameters</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="initialize_push_singleton-instance_method">
-  
-    #<strong>initialize_push_singleton</strong>(name)  &#x21d2; <tt>String</tt>  <span class="extras">(private)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Generates singleton on array instance variable to overide &lt;&lt; so value is validated before being added to the array</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-385
-386
-387
-388
-389
-390
-391
-392
-393
-394
-395
-396</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 385</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize_push_singleton'>initialize_push_singleton</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='heredoc_beg'>&lt;&lt;-RUBY</span>
-<span class='tstring_content'>  bind = self
-  @</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>.singleton_class.send(:define_method, :&lt;&lt;) do |v|
-    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_type!&quot;, [v])
-    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_inclusion!&quot;, [v])
-    bind.send(:&quot;validate_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_assertion!&quot;, [v])
-
-    push(v)
-  end
-</span><span class='heredoc_end'>  RUBY
-</span><span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="initialize_push_singletons-instance_method">
-  
-    #<strong>initialize_push_singletons</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(private)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Generates push singleton for each array property</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-374
-375
-376
-377
-378
-379</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 374</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize_push_singletons'>initialize_push_singletons</span>
-  <span class='id identifier rubyid_collections'>collections</span> <span class='op'>=</span> <span class='id identifier rubyid_properties'>properties</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>|</span> <span class='id identifier rubyid_collection?'>collection?</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:type</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_singletons'>singletons</span> <span class='op'>=</span>
-    <span class='id identifier rubyid_collections'>collections</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span> <span class='id identifier rubyid_initialize_push_singleton'>initialize_push_singleton</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_singletons'>singletons</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2001,7 +1038,7 @@
       <div class="method_details ">
   <h3 class="signature " id="inside?-instance_method">
   
-    #<strong>inside?</strong>(name, values)  &#x21d2; <tt>Proc</tt>  <span class="extras">(private)</span>
+    #<strong>inside?</strong>(name, one_of)  &#x21d2; <tt>Proc</tt>  <span class="extras">(private)</span>
   
 
   
@@ -2016,43 +1053,7 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the property name</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>values</span>
-      
-      
-        <span class='type'>(<tt>Array</tt>, <tt>nil</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the values to test against</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2078,18 +1079,18 @@
       <pre class="lines">
 
 
-195
-196
-197
-198
-199</pre>
+166
+167
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 166</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_inside?'>inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_inside?'>inside?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span>
-    <span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../NotAcceptedError.html" title="Otoroshi::NotAcceptedError (class)">NotAcceptedError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../NotAcceptedError.html#initialize-instance_method" title="Otoroshi::NotAcceptedError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_values'>values</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_one_of'>one_of</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../NotAcceptedError.html" title="Otoroshi::NotAcceptedError (class)">NotAcceptedError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../NotAcceptedError.html#initialize-instance_method" title="Otoroshi::NotAcceptedError#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -2144,12 +1145,12 @@
       <pre class="lines">
 
 
-77
-78
-79</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_properties'>properties</span>
   <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -2315,107 +1316,21 @@
 52
 53
 54
-55
-56
-57
-58
-59
-60
-61</pre>
+55</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 46</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_property'>property</span><span class='lparen'>(</span> <span class='comment'># rubocop:disable Metrics/ParameterLists
-</span>  <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span>
-  <span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='const'>Object</span><span class='comma'>,</span>
-  <span class='label'>one_of:</span> <span class='kw'>nil</span><span class='comma'>,</span>
-  <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid__'>_</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>allow_nil:</span> <span class='kw'>false</span><span class='comma'>,</span>
-  <span class='label'>default:</span> <span class='kw'>nil</span>
-<span class='rparen'>)</span>
-  <span class='id identifier rubyid_add_to_properties'>add_to_properties</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_define_validate_type!'>define_validate_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_define_validate_inclusion!'>define_validate_inclusion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_define_validate_assertion!'>define_validate_assertion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_property'>property</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='const'>Object</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid__'>_</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>allow_nil:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>default:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_to_properties'>add_to_properties</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='comma'>,</span> <span class='id identifier rubyid_default'>default</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_collection'>collection</span> <span class='op'>=</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'>Array</span> <span class='op'>||</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_define_validate_type!'>define_validate_type!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_define_validate_inclusion!'>define_validate_inclusion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_one_of'>one_of</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_define_validate_assertion!'>define_validate_assertion!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_collection'>collection</span><span class='comma'>,</span> <span class='id identifier rubyid_assert'>assert</span><span class='comma'>,</span> <span class='id identifier rubyid_allow_nil'>allow_nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_getter'>define_getter</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_define_setter'>define_setter</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_redefine_initialize'>redefine_initialize</span>
+  <span class='id identifier rubyid_class_eval'>class_eval</span> <span class='const'><span class='object_link'><a href="../Initializer.html" title="Otoroshi::Initializer (class)">Initializer</a></span></span><span class='period'>.</span><span class='id identifier rubyid_draw'><span class='object_link'><a href="../Initializer.html#draw-class_method" title="Otoroshi::Initializer.draw (method)">draw</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_properties'>properties</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='comma'>,</span> <span class='kw'>__LINE__</span> <span class='op'>+</span> <span class='int'>1</span>
 <span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="redefine_initialize-instance_method">
-  
-    #<strong>redefine_initialize</strong>  &#x21d2; <tt>void</tt>  <span class="extras">(private)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-  <div class="note notetag">
-    <strong>Note:</strong>
-    <div class='inline'>
-<p>method is defined with `class_eval`</p>
-</div>
-  </div>
-
-<p class="note returns_void">This method returns an undefined value.</p>
-<p>Redefines initialize method</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-  <div class="examples">
-    <p class="tag_title">Examples:</p>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>Generated method</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>foo:</span><span class='comma'>,</span> <span class='label'>bar:</span> <span class='int'>0</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_foo'>foo</span> <span class='op'>=</span> <span class='id identifier rubyid_foo'>foo</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_bar'>bar</span> <span class='op'>=</span> <span class='id identifier rubyid_bar'>bar</span>
-<span class='kw'>end</span></code></pre>
-    
-  </div>
-
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-316
-317
-318
-319
-320
-321
-322
-323</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 316</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_redefine_initialize'>redefine_initialize</span>
-  <span class='id identifier rubyid_class_eval'>class_eval</span> <span class='heredoc_beg'>&lt;&lt;-RUBY</span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='comma'>,</span> <span class='kw'>__LINE__</span> <span class='op'>+</span> <span class='int'>1</span>
-<span class='tstring_content'>    def initialize(</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_initialize_parameters'>initialize_parameters</span><span class='embexpr_end'>}</span><span class='tstring_content'>)
-      </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_initialize_assignments'>initialize_assignments</span><span class='embexpr_end'>}</span><span class='tstring_content'>
-      </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_initialize_push_singletons'>initialize_push_singletons</span><span class='embexpr_end'>}</span><span class='tstring_content'>
-    end
-</span><span class='heredoc_end'>  RUBY
-</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2433,6 +1348,14 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+  <div class="note notetag">
+    <strong>Note:</strong>
+    <div class='inline'>
+<p>params are used for binding in define_method scope</p>
+</div>
+  </div>
+
+
 <p>Defines a lambda to be called to validate that value matches the type</p>
 
 
@@ -2450,42 +1373,6 @@
       <pre class="example code"><code><span class='id identifier rubyid_type_validation'>type_validation</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='const'>String</span><span class='comma'>,</span> <span class='const'>Symbol</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='comment'>#=&gt; -&gt;(v) { [String, Symbol].any? { |t| v.is_a? t } }</span></code></pre>
     
   </div>
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>type</span>
-      
-      
-        <span class='type'>(<tt>Class</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the type to test against</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>array</span>
-      
-      
-        <span class='type'>(<tt>true</tt>, <tt>false</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>define if the value is an array</p>
-</div>
-      
-    </li>
-  
-</ul>
 
 <p class="tag_title">Returns:</p>
 <ul class="return">
@@ -2512,25 +1399,25 @@
       <pre class="lines">
 
 
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157</pre>
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'lib/otoroshi/sanctuary.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type_validation'>type_validation</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'>Array</span>
@@ -2558,7 +1445,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Oct 15 23:09:27 2020 by
+  Generated on Fri Oct 16 12:42:50 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.6).
 </div>

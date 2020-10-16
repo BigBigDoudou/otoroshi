@@ -5,7 +5,7 @@ SimpleCov.start
 
 require './lib/otoroshi'
 
-# rubocop:disable Style/SymbolArray
+# rubocop:disable Style/SymbolArray, Style/WordArray
 describe Otoroshi::Sanctuary do
   let(:monkey) { Class.new.include(described_class) }
 
@@ -14,73 +14,96 @@ describe Otoroshi::Sanctuary do
   # getter => returns value
 
   describe '#initialize' do
-    context 'when arguments are all valid' do
-      it 'initializes an instance an set values' do
+    context 'when no properties are set' do
+      it 'initializes an instance' do
         expect(monkey.new).to be_a monkey
-        monkey.property(:foo, Integer)
-        instance = monkey.new(foo: 42)
-        expect(instance).to be_a monkey
-        expect(instance.instance_variable_get(:@foo)).to eq 42
+      end
+    end
+
+    context 'when arguments are all valid' do
+      before { monkey.property(:number, Integer) }
+
+      it 'initializes an instance' do
+        expect(monkey.new(number: 42)).to be_a monkey
+      end
+
+      it 'sets the instance variables values' do
+        instance = monkey.new(number: 42)
+        expect(instance.instance_variable_get(:@number)).to eq 42
       end
     end
 
     context 'when at least one argument is not valid' do
       it 'raises an error' do
-        expect { monkey.new(42) }.to raise_error ArgumentError
-        monkey.property(:foo, String)
-        monkey.property(:bar, Integer)
-        expect { monkey.new(foo: 'hello', bar: 'world') }.to raise_error Otoroshi::Error
+        monkey.property(:message, String)
+        monkey.property(:number, Integer)
+        expect { monkey.new(message: 'hello', number: 'world') }.to raise_error Otoroshi::Error
+      end
+    end
+
+    context 'when undefined keys are passed' do
+      it 'raises an error' do
+        monkey.property(:number, Integer)
+        expect { monkey.new(message: 'hello') }.to raise_error ArgumentError
       end
     end
   end
 
   describe '#<getter>' do
     it 'returns the instance variable value' do
-      monkey.property(:foo, Integer)
-      instance = monkey.new(foo: 42)
-      expect(instance.foo).to eq 42
+      monkey.property(:number, Integer)
+      instance = monkey.new(number: 42)
+      expect(instance.number).to eq 42
     end
   end
 
   describe '#<setter>' do
-    before do
-      monkey.property(:foo, Integer)
-      monkey.property(:bar, [Integer])
-    end
-    let(:instance) { monkey.new(foo: 42, bar: [1]) }
+    context 'when value is expected to be a single object' do
+      before { monkey.property(:number, Integer) }
 
-    context 'when value is valid' do
-      it 'sets the instance variable value' do
-        instance.foo = 7
-        expect(instance.instance_variable_get(:@foo)).to eq 7
-        instance.bar = [2]
-        expect(instance.instance_variable_get(:@bar)).to eq [2]
-      end
+      let(:instance) { monkey.new(number: 42) }
 
-      context 'when values is pushed with <<' do
+      context 'when value is valid' do
         it 'sets the instance variable value' do
-          instance.bar << 2
-          expect(instance.instance_variable_get(:@bar)).to eq [1, 2]
+          instance.number = 7
+          expect(instance.instance_variable_get(:@number)).to eq 7
+        end
+      end
+
+      context 'when value is not valid' do
+        it 'raises an error' do
+          expect { instance.number = 1.5 }.to raise_error Otoroshi::Error
         end
       end
     end
 
-    context 'when value is not valid' do
-      it 'sets the instance variable value' do
-        expect { instance.foo = 1.5 }.to raise_error Otoroshi::Error
-        expect { instance.bar = [1.5] }.to raise_error Otoroshi::Error
-        expect(instance.instance_variable_get(:@foo)).to eq 42
-      end
+    context 'when value is expected to be collection' do
+      before { monkey.property(:numbers, [Integer]) }
 
-      context 'when values is pushed with <<' do
-        it 'raises an error' do
-          expect { instance.bar << 1.5 }.to raise_error Otoroshi::Error
+      let(:instance) { monkey.new(numbers: [1, 2, 3]) }
+
+      context 'when value is valid' do
+        it 'sets the instance variable value' do
+          instance.numbers = [4, 5, 6]
+          expect(instance.instance_variable_get(:@numbers)).to eq [4, 5, 6]
         end
       end
 
-      context 'when values is pushed with add' do
-        it 'does not raise error' do
-          expect { instance.bar << 1.5 }.to raise_error Otoroshi::Error
+      context 'when value is not valid' do
+        it 'raises an error' do
+          expect { instance.numbers = ['hello', 'world'] }.to raise_error Otoroshi::Error
+        end
+      end
+
+      context 'when element is pushed using <<' do
+        it 'validates the element' do
+          expect { instance.numbers << 1.5 }.to raise_error Otoroshi::Error
+        end
+      end
+
+      context 'when element is pushed using #push' do
+        it 'does not validate the element' do
+          expect { instance.numbers.push(1.5) }.not_to raise_error
         end
       end
     end
@@ -88,88 +111,89 @@ describe Otoroshi::Sanctuary do
 
   describe 'type validation' do
     context 'when type is not set' do
-      it 'accepts any value' do
-        monkey.property(:foo)
-        expect { monkey.new(foo: nil) }.not_to raise_error
-        expect { monkey.new(foo: 42) }.not_to raise_error
-        expect { monkey.new(foo: [1, 2, 3]) }.not_to raise_error
-        expect { monkey.new(foo: Class.new.new) }.not_to raise_error
+      before { monkey.property(:whatever) }
+
+      it 'accepts nil value' do
+        expect { monkey.new(whatever: nil) }.not_to raise_error
+      end
+
+      it 'accepts any single value' do
+        expect { monkey.new(whatever: Class.new.new) }.not_to raise_error
+      end
+
+      it 'accepts any collection' do
+        expect { monkey.new(whatever: [Class.new.new]) }.not_to raise_error
       end
     end
 
-    context 'when type is a class' do
-      it 'validates that value is an instance of the class' do
-        monkey.property(:foo, Integer)
-        expect { monkey.new(foo: 42) }.not_to raise_error
-        expect { monkey.new(foo: 'hello') }.to raise_error Otoroshi::WrongTypeError, ':foo is not an instance of Integer'
-        expect { monkey.new(foo: [42]) }.to raise_error Otoroshi::WrongTypeError, ':foo is not an instance of Integer'
-        expect { monkey.new(foo: nil) }.to raise_error Otoroshi::WrongTypeError, ':foo is not an instance of Integer'
+    context 'when type is another class than Array' do
+      it 'validates value is an instance of the class' do
+        monkey.property(:number, Integer)
+        expect { monkey.new(number: 'hello') }
+          .to raise_error Otoroshi::WrongTypeError, ':number is not an instance of Integer'
       end
     end
 
     context 'when type is an array' do
-      it 'validates that value is an array' do
-        monkey.property(:foo, [])
-        expect { monkey.new(foo: []) }.not_to raise_error
-        expect { monkey.new(foo: [1, 2, 3]) }.not_to raise_error
-        expect { monkey.new(foo: 42) }.to raise_error Otoroshi::NotAnArray, ':foo is not an array'
-      end
+      context 'when not specific class is set (property :whatevers, [])' do
+        before { monkey.property(:whatevers, []) }
 
-      context 'when the array contains a class' do
-        it 'validates that each element of the collection is an instance of the class' do
-          monkey.property(:foo, [Integer])
-          expect { monkey.new(foo: []) }.not_to raise_error
-          expect { monkey.new(foo: [42]) }.not_to raise_error
-          expect { monkey.new(foo: [1, 2, 3]) }.not_to raise_error
-          expect { monkey.new(foo: [nil]) }.to raise_error Otoroshi::WrongTypeError, ':foo contains elements that are not instances of Integer'
-          expect { monkey.new(foo: [1, 1.5]) }.to raise_error Otoroshi::WrongTypeError, ':foo contains elements that are not instances of Integer'
+        it 'accepts empty array' do
+          expect { monkey.new(whatevers: []) }.not_to raise_error
+        end
+
+        it 'validates value is an array' do
+          expect { monkey.new(whatevers: 42) }.to raise_error Otoroshi::NotAnArray, ':whatevers is not an array'
         end
       end
 
-      context 'when the array is empty' do
-        it 'accepts any element of the collection' do
-          monkey.property(:foo, [])
-          expect { monkey.new(foo: []) }.not_to raise_error
-          expect { monkey.new(foo: [nil]) }.not_to raise_error
-          expect { monkey.new(foo: [1, Class.new.new]) }.not_to raise_error
+      context 'when the array specifies a class (property :numbers, [Integer])' do
+        before { monkey.property(:numbers, [Integer]) }
+
+        it 'accepts empty array' do
+          expect { monkey.new(numbers: []) }.not_to raise_error
+        end
+
+        it 'validates each element of the collection is an instance of the class' do
+          expect { monkey.new(numbers: [1, 1.5]) }
+            .to raise_error Otoroshi::WrongTypeError, ':numbers contains elements that are not instances of Integer'
         end
       end
     end
 
-    context 'when allow_nil: is true' do
-      it 'accepts nil as a value' do
-        monkey.property(:foo, Integer, allow_nil: true)
-        expect { monkey.new(foo: nil) }.not_to raise_error
-        expect { monkey.new(foo: [nil]) }.to raise_error Otoroshi::WrongTypeError, ':foo is not an instance of Integer'
-      end
-    end
+    describe 'inheritance' do
+      let(:parent) { Class.new }
+      let(:child) { Class.new(parent) }
 
-    describe '@edge case - inheritance' do
-      it 'validates inherited type' do
-        parent = Class.new
-        child = Class.new(parent)
-        expect(child < parent).to be true
-        monkey.property(:foo, parent)
-        expect(monkey.new(foo: child.new)).to be_a monkey
-        monkey.property(:foo, child)
-        expect { monkey.new(foo: parent.new) }.to raise_error Otoroshi::WrongTypeError, ":foo is not an instance of #{child}"
+      it 'accepts inherited classes' do
+        monkey.property(:thing, parent)
+        expect { monkey.new(thing: child.new) }.not_to raise_error
+      end
+
+      it 'does not accept ancestor classes' do
+        monkey.property(:thing, child)
+        expect { monkey.new(thing: parent.new) }.to raise_error Otoroshi::WrongTypeError, ":thing is not an instance of #{child}"
       end
     end
   end
 
   describe 'inclusion validation (one_of:)' do
-    it 'validates that value is included is the accepted values' do
+    it 'validates value is included is the accepted values' do
       monkey.property(:foo, one_of: [:apple, :pear])
-      expect { monkey.new(foo: :apple) }.not_to raise_error
-      expect { monkey.new(foo: :banana) }.to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [:apple, :pear]'
+      expect { monkey.new(foo: :banana) }
+        .to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [:apple, :pear]'
     end
 
     context 'when type is an array with class' do
-      it 'validates that each element is included is the accepted values' do
-        monkey.property(:foo, [], one_of: [:apple, :pear])
+      before { monkey.property(:foo, [], one_of: [:apple, :pear]) }
+
+      it 'accepts empty array' do
         expect { monkey.new(foo: []) }.not_to raise_error
-        expect { monkey.new(foo: [:apple, :pear]) }.not_to raise_error
-        expect { monkey.new(foo: [:apple, :banana]) }.to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [:apple, :pear]'
+      end
+
+      it 'validates each element is included is the accepted values' do
+        expect { monkey.new(foo: [:apple, :banana]) }
+          .to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [:apple, :pear]'
       end
     end
 
@@ -181,184 +205,79 @@ describe Otoroshi::Sanctuary do
     end
   end
 
-  describe 'specific validation (assert:)' do
-    it 'validates that value respects the assertion' do
+  describe 'assertion validation (assert:)' do
+    it 'validates value respects the assertion' do
       monkey.property(:foo, Integer, assert: ->(v) { v > 0 })
-      expect { monkey.new(foo: 42) }.not_to raise_error
-      expect { monkey.new(foo: -1) }.to raise_error Otoroshi::AssertionError, ':foo does not respect the assertion'
+      expect { monkey.new(foo: -1) }
+        .to raise_error Otoroshi::AssertionError, ':foo does not respect the assertion'
     end
 
     context 'when type is an array' do
-      it 'validates that each element respects the assertion' do
-        monkey.property(:foo, [], assert: ->(v) { v > 0 })
-        expect { monkey.new(foo: []) }.not_to raise_error
-        expect { monkey.new(foo: [1, 2]) }.not_to raise_error
-        expect { monkey.new(foo: [1, -1]) }.to raise_error Otoroshi::AssertionError, ':foo contains elements that do not respect the assertion'
-      end
-    end
+      before { monkey.property(:foo, [], assert: ->(v) { v > 0 }) }
 
-    context 'when :allow_nil is true' do
-      it 'accepts nil as a value' do
-        monkey.property(:foo, one_of: [:apple, :pear], allow_nil: true)
-        expect { monkey.new(foo: nil) }.not_to raise_error
+      it 'accepts empty array' do
+        expect { monkey.new(foo: []) }.not_to raise_error
+      end
+
+      it 'validates each element respects the assertion' do
+        expect { monkey.new(foo: [1, -1]) }
+          .to raise_error Otoroshi::AssertionError, ':foo contains elements that do not respect the assertion'
       end
     end
   end
+
+  describe 'allow nil as a value (allow_nil:)' do
+    it 'permits null values' do
+      monkey.property(:foo, Integer, allow_nil: true)
+      expect { monkey.new }.not_to raise_error
+    end
+
+    it 'ignores inclusion and assertion' do
+      monkey.property(:foo, Integer, one_of: [1, 2, 3], allow_nil: true)
+      monkey.property(:bar, Integer, assert: ->(v) { v > 0 }, allow_nil: true)
+      expect { monkey.new }.not_to raise_error
+    end
+
+    context 'when type is an array' do
+      it 'does not apply to each element' do
+        monkey.property(:foo, [Integer], allow_nil: true)
+        expect { monkey.new(foo: [1, nil]) }
+          .to raise_error Otoroshi::WrongTypeError, ':foo contains elements that are not instances of Integer'
+      end
+    end
+  end
+
+  describe 'mutliple properties test' do
+    before do
+      monkey.property(:number, Integer)
+      monkey.property(:numbers, [Integer])
+      monkey.property(:message, String)
+      monkey.property(:messages, [String])
+    end
+
+    let(:instance) { monkey.new(number: 42, numbers: [1, 2, 3], message: 'hello', messages: ['alfa', 'bravo', 'charlie']) }
+
+    it 'defines setters for each properties' do # rubocop:disable RSpec/MultipleExpectations
+      expect(instance.number).to eq 42
+      expect(instance.numbers).to eq [1, 2, 3]
+      expect(instance.message).to eq 'hello'
+      expect(instance.messages).to eq ['alfa', 'bravo', 'charlie']
+    end
+
+    it 'defines getters for each properties' do # rubocop:disable RSpec/MultipleExpectations
+      expect { instance.number = 7 }.to change(instance, :number).from(42).to(7)
+      expect { instance.numbers = [4, 5, 6] }.to change(instance, :numbers).from([1, 2, 3]).to([4, 5, 6])
+      expect { instance.message = 'world' }.to change(instance, :message).from('hello').to('world')
+      expect { instance.messages = ['delta', 'echo', 'foxtrot'] }
+        .to change(instance, :messages).from(['alfa', 'bravo', 'charlie']).to(['delta', 'echo', 'foxtrot'])
+    end
+
+    it 'defines singletons for each array properties' do # rubocop:disable RSpec/MultipleExpectations
+      expect { instance.numbers << 1.5 }
+        .to raise_error Otoroshi::WrongTypeError, ':numbers contains elements that are not instances of Integer'
+      expect { instance.messages << :world }
+        .to raise_error Otoroshi::WrongTypeError, ':messages contains elements that are not instances of String'
+    end
+  end
 end
-
-#     describe ':one_of (array of values)' do
-#       context 'when :one_of is not set' do
-#         it 'does not validate value inclusion' do
-#           monkey.property(:foo)
-#           expect { monkey.new(foo: :bar) }.not_to raise_error
-#         end
-#       end
-
-#       context 'when :one_of is set' do
-#         it 'validates that value is included in the accepted ones' do
-#           monkey.property(:foo, one_of: [:apple, :pear])
-#           # initialize
-#           expect { monkey.new(foo: :apple) }.not_to raise_error
-#           expect { monkey.new(foo: :banana) }.to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [apple, pear]'
-#           # set
-#           instance = monkey.new(foo: :apple)
-#           expect { instance.foo = :pear }.not_to raise_error
-#           expect { instance.foo = :banana }.to raise_error Otoroshi::NotAcceptedError, ':foo is not included in [apple, pear]'
-#         end
-
-#         context 'when :array is true' do
-#           it 'validates that each value is included in the accepted ones' do
-#             monkey.property(:foo, array: true, one_of: [:apple, :pear])
-#             # initialize
-#             expect { monkey.new(foo: []) }.not_to raise_error
-#             expect { monkey.new(foo: [:apple, :pear]) }.not_to raise_error
-#             expect { monkey.new(foo: [:apple, :banana]) }.to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [apple, pear]'
-#             # set
-#             instance = monkey.new(foo: [:apple])
-#             expect { instance.foo = [] }.not_to raise_error
-#             expect { instance.foo = [:apple, :pear] }.not_to raise_error
-#             expect { instance.foo = [:apple, :banana] }.to raise_error Otoroshi::NotAcceptedError, ':foo contains elements that are not included in [apple, pear]'
-#           end
-#         end
-#       end
-#     end
-
-#     describe ':validate (Lambda, default: ->(_) { true })' do
-#       context 'when :validate is not set' do
-#         it 'does not validate value' do
-#           monkey.property(:foo, Integer)
-#           expect { monkey.new(foo: 1) }.not_to raise_error
-#           expect { monkey.new(foo: -1) }.not_to raise_error
-#         end
-#       end
-
-#       context 'when :validate has a lambda' do
-#         it 'validates that value matches the lambda' do
-#           monkey.property(:foo, Integer, validate: ->(v) { v > 0 })
-#           # initialize
-#           expect { monkey.new(foo: 1) }.not_to raise_error
-#           expect { monkey.new(foo: -1) }.to raise_error Otoroshi::AssertionError, ':foo does not pass specific validation'
-#           # set
-#           instance = monkey.new(foo: 42)
-#           expect { instance.foo = 7 }.not_to raise_error
-#           expect { instance.foo = -7 }.to raise_error Otoroshi::AssertionError, ':foo does not pass specific validation'
-#         end
-#       end
-
-#       context 'when :array is true' do
-#         it 'validates that each value is included in the accepted ones' do
-#           monkey.property(:foo, array: true, validate: ->(v) { v > 0 })
-#           # initialize
-#           expect { monkey.new(foo: []) }.not_to raise_error
-#           expect { monkey.new(foo: [1, 2]) }.not_to raise_error
-#           expect { monkey.new(foo: [1, -1]) }.to raise_error Otoroshi::AssertionError, ':foo contains elements that do not pass specific validation'
-#           # set
-#           instance = monkey.new(foo: [42])
-#           expect { instance.foo = [] }.not_to raise_error
-#           expect { instance.foo = [1, 2] }.not_to raise_error
-#           expect { instance.foo = [1, -1] }.to raise_error Otoroshi::AssertionError, ':foo contains elements that do not pass specific validation'
-#         end
-#       end
-#     end
-
-#     describe ':allow_nil (true or false, default: false)' do
-#       context 'when :allow_nil is not set or is set to false' do
-#         it 'checks the value is present' do
-#           monkey.property(:foo, Integer)
-#           expect { monkey.new }.to raise_error ArgumentError
-#         end
-#       end
-
-#       context 'when :allow_nil is true' do
-#         it 'authorizes nil value' do
-#           monkey.property(:foo, Integer, allow_nil: true)
-#           expect { monkey.new }.not_to raise_error
-#         end
-#         it 'does not raise error on validation if value is nil' do
-#           monkey.property(:foo, Integer, validate: ->(v) { v > 0 }, allow_nil: true)
-#           expect { monkey.new }.not_to raise_error
-#         end
-#       end
-#     end
-
-#     describe ':default (default: nil)' do
-#       context 'when :default is set' do
-#         context 'when key is not provided on initialization' do
-#           before { monkey.property(:foo, Integer, default: 0) }
-
-#           it 'does not raise error' do
-#             expect { monkey.new }.not_to raise_error
-#           end
-#           it 'uses the default value' do
-#             expect(monkey.new.foo).to eq 0
-#           end
-#         end
-
-#         context 'when value is explicitely initialized with nil' do
-#           it 'does not use the default value' do
-#             monkey.property(:foo, Integer, default: 0, allow_nil: true)
-#             expect(monkey.new(foo: nil).foo).to eq nil
-#           end
-#         end
-
-#         context 'when value is explicitely assigned to nil' do
-#           it 'does not use the default value' do
-#             monkey.property(:foo, Integer, default: 0, allow_nil: true)
-#             instance = monkey.new(foo: 42)
-#             instance.foo = nil
-#             expect(instance.foo).to eq nil
-#           end
-#         end
-#       end
-#     end
-#   end
-
-#   describe '::properties' do
-#     context 'when there is no properties' do
-#       it 'returns an empty list' do
-#         expect(monkey.properties).to be_empty
-#       end
-#     end
-
-#     context 'when there is one property' do
-#       it 'returns a list containing the property' do
-#         monkey.property(:foo)
-#         expect(monkey.properties).to eq({ foo: { allow_nil: false, default: nil } })
-#       end
-#     end
-
-#     context 'when there is multiple properties' do
-#       it 'returns a list containing all properties' do
-#         monkey.property(:foo)
-#         monkey.property(:bar, allow_nil: true, default: 0)
-#         expect(monkey.properties).to eq(
-#           {
-#             foo: { allow_nil: false, default: nil },
-#             bar: { allow_nil: true, default: 0 }
-#           }
-#         )
-#       end
-#     end
-#   end
-# end
-# rubocop:enable Style/SymbolArray
+# rubocop:enable Style/SymbolArray, Style/WordArray
