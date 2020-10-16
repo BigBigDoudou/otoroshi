@@ -48,7 +48,7 @@ module Otoroshi
     #   end
     #   RUBY
     def draw
-      <<-RUBY
+      <<~RUBY
         def initialize(#{initialize_parameters})
           #{initialize_assignments}
           #{initialize_push_singletons}
@@ -87,19 +87,27 @@ module Otoroshi
     def default_parameter_for(options)
       default, allow_nil = options.values_at(:default, :allow_nil)
       if default
-        prefix =
-          case default
-          when Symbol then ':'
-          when String then '"'
-          end
-        suffix =
-          case default
-          when String then '"'
-          end
-
-        " #{prefix}#{default}#{suffix}"
+        " #{prefix(default)}#{default}#{suffix(default)}"
       else
         allow_nil ? ' nil' : ''
+      end
+    end
+
+    # Generates the characters to put before the value
+    # @note it avoids symbol without colon or string without quotes
+    #   which would be interpreted as methods
+    def prefix(default)
+      case default
+      when Symbol then ':'
+      when String then '"'
+      end
+    end
+
+    # Generates the characters to put after the value
+    # @note it avoids string without quotes which would be interpreted as method
+    def suffix(default)
+      case default
+      when String then '"'
       end
     end
 
@@ -117,7 +125,7 @@ module Otoroshi
         properties.keys.map do |name|
           "self.#{name} = #{name}"
         end
-      assignments.join("\n")
+      assignments.join("\n  ")
     end
 
     # Generates push singleton for each array property
@@ -148,7 +156,7 @@ module Otoroshi
           initialize_push_singleton(name)
         end
       # assign self to a variable so the instance is accessible from the singleton scope
-      singletons.unshift('bind = self').join("\n")
+      ['bind = self', singletons.join].join("\n")
     end
 
     # Generates singleton on collection instance variable to overide <<
@@ -165,11 +173,10 @@ module Otoroshi
     #   RUBY
     def initialize_push_singleton(name)
       <<-RUBY
-      @#{name}.singleton_class.send(:define_method, :<<) do |v|
-        bind.send(:"validate_#{name}!", [v])
-
-        push(v)
-      end
+  @#{name}.singleton_class.send(:define_method, :<<) do |v|
+    bind.send(:"validate_#{name}!", [v])
+    push(v)
+  end
       RUBY
     end
   end
