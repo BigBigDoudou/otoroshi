@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'simplecov'
-SimpleCov.start
-
-require './lib/otoroshi'
+require 'spec_helper'
 
 # rubocop:disable Style/SymbolArray, Style/WordArray
 describe Otoroshi::Sanctuary do
@@ -75,6 +72,21 @@ describe Otoroshi::Sanctuary do
           expect { instance.number = 1.5 }.to raise_error Otoroshi::Error
         end
       end
+
+      context 'when value is set using "+=" or "-="' do
+        context 'when result is valid' do
+          it 'sets the instance variable value' do
+            instance.number += 8
+            expect(instance.instance_variable_get(:@number)).to eq 50
+          end
+        end
+
+        context 'when result is not valid' do
+          it 'raises an error' do
+            expect { instance.number += 0.5 }.to raise_error Otoroshi::Error
+          end
+        end
+      end
     end
 
     context 'when value is expected to be collection' do
@@ -94,16 +106,22 @@ describe Otoroshi::Sanctuary do
           expect { instance.numbers = ['hello', 'world'] }.to raise_error Otoroshi::Error
         end
       end
+    end
 
-      context 'when element is pushed using <<' do
-        it 'validates the element' do
-          expect { instance.numbers << 1.5 }.to raise_error Otoroshi::Error
+    context 'when value is mutated' do
+      context 'when value is not an array' do
+        it 'raises an error' do
+          monkey.property(:message, String)
+          instance = monkey.new(message: 'hello')
+          expect { instance.message.upcase! }.to raise_error FrozenError
         end
       end
 
-      context 'when element is pushed using #push' do
-        it 'does not validate the element' do
-          expect { instance.numbers.push(1.5) }.not_to raise_error
+      context 'when value is an array' do
+        it 'raises an error' do
+          monkey.property(:numbers, [Integer])
+          instance = monkey.new(numbers: [1, 2, 3])
+          expect { instance.numbers << 4 }.to raise_error FrozenError
         end
       end
     end
@@ -270,13 +288,6 @@ describe Otoroshi::Sanctuary do
       expect { instance.message = 'world' }.to change(instance, :message).from('hello').to('world')
       expect { instance.messages = ['delta', 'echo', 'foxtrot'] }
         .to change(instance, :messages).from(['alfa', 'bravo', 'charlie']).to(['delta', 'echo', 'foxtrot'])
-    end
-
-    it 'defines singletons for each array properties' do # rubocop:disable RSpec/MultipleExpectations
-      expect { instance.numbers << 1.5 }
-        .to raise_error Otoroshi::Collection::TypeError, ':numbers contains elements that are not instances of Integer'
-      expect { instance.messages << :world }
-        .to raise_error Otoroshi::Collection::TypeError, ':messages contains elements that are not instances of String'
     end
   end
 end

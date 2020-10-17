@@ -17,11 +17,6 @@ module Otoroshi
       #     self.number = number
       #     self.message = message
       #     self.fruits = fruits
-      #     bind = self
-      #     @fruits.singleton_class.send(:define_method, :<<) do |v|
-      #       bind.send(:"validate_fruits!", [v])
-      #       push(v)
-      #     end
       #   end
       #   RUBY
       def draw(properties)
@@ -50,8 +45,7 @@ module Otoroshi
     def draw
       <<~RUBY
         def initialize(#{initialize_parameters})
-          #{initialize_assignments}
-          #{initialize_push_singletons}
+          #{initialize_body}
         end
       RUBY
     end
@@ -120,64 +114,12 @@ module Otoroshi
     #   self.foo = foo
     #   self.bar = bar
     #   RUBY
-    def initialize_assignments
+    def initialize_body
       assignments =
         properties.keys.map do |name|
           "self.#{name} = #{name}"
         end
       assignments.join("\n  ")
-    end
-
-    # Generates push singleton for each array property
-    #
-    # @return [String]
-    #
-    # @example
-    #   <<-RUBY
-    #   bind = self
-    #   @fruits.singleton_class.send(:define_method, :<<) do |v|
-    #     bind.send(:"validate_fruits!", [v])
-    #     push(v)
-    #   end
-    #   @numbers.singleton_class.send(:define_method, :<<) do |v|
-    #     bind.send(:"validate_numbers!", [v])
-    #     push(v)
-    #   end
-    #   RUBY
-    def initialize_push_singletons
-      collections =
-        properties.select do |_, options|
-          options[:type].is_a?(Array) || options[:type] == Array
-        end
-      return if collections.empty?
-
-      singletons =
-        collections.keys.map do |name|
-          initialize_push_singleton(name)
-        end
-      # assign self to a variable so the instance is accessible from the singleton scope
-      ['bind = self', singletons.join].join("\n")
-    end
-
-    # Generates singleton on collection instance variable to overide <<
-    # so value is validated before being added to the collection
-    #
-    # @return [String]
-    #
-    # @example
-    #   <<-RUBY
-    #   @fruits.singleton_class.send(:define_method, :<<) do |v|
-    #     bind.send(:"validate_fruits!", [v])
-    #     push(v)
-    #   end
-    #   RUBY
-    def initialize_push_singleton(name)
-      <<-RUBY
-  @#{name}.singleton_class.send(:define_method, :<<) do |v|
-    bind.send(:"validate_#{name}!", [v])
-    push(v)
-  end
-      RUBY
     end
   end
 end

@@ -66,16 +66,22 @@ instance.fruits # [:apple, :pear]
 
 instance.quantity = 7
 instance.message = 'world'
-instance.fruits << :banana
+instance.fruits # [:apple, :pear, :banana]
 
 instance.quantity # 7
 instance.message # world
 instance.fruits # [:apple, :pear, :banana]
 ```
 
-Validations run on initialization and assignment, starting by a type check.
+Variables are protected so they cannot be mutated.
 
-For arrays property, use the `<<` to run validations on the pushed value. If for whatever reason you do not want the validations to run, use `#push`.
+```ruby
+# # Those examples raise a FrozenError
+instance.message.upcase!
+instance.fruits << :coconut
+```
+
+Validations run on initialization and assignment, starting by a type check.
 
 ```ruby
 class Example
@@ -84,7 +90,7 @@ class Example
   property :quantity, Integer
 end
 
-# Those examples will raise an Otoroshi::WrontTypeError
+# Those examples raise an Otoroshi::WrontTypeError
 # with message: ":quantity is not an instance of Integer"
 Example.new
 Example.new(quantity: 1.5)
@@ -133,7 +139,7 @@ class Example
   property :eatable, one_of: [true, false]
 end
 
-# These examples will raise an Otoroshi::OneOfError
+# These examples raise an Otoroshi::OneOfError
 # with message: "eatable is not in [true, false]"
 Example.new(eatable: 'maybe')
 instance.eatable = 'maybe'
@@ -148,7 +154,7 @@ class Example
   property :fruits, [], one_of: [:apple, :pear]
 end
 
-# These examples will raise an Otoroshi::OneOfError
+# These examples raise an Otoroshi::OneOfError
 # with message: ":fruits contains elements that are not in [:apple, :pear]"
 Example.new(fruits: [:apple, :banana])
 instance.fruit = [:apple, :banana]
@@ -164,7 +170,7 @@ class Example
   property :quantity, Integer, assert: ->(v) { v > 0 }
 end
 
-# These examples will raise an Otoroshi::AssertError
+# These examples raise an Otoroshi::AssertError
 # with message: ":quantity does not respect the assertion"
 Example.new(quantity: -1)
 instance.quantity = -1
@@ -179,7 +185,7 @@ class Example
   property :quantities, [Integer], assert: ->(v) { v > 0 }
 end
 
-# These examples will raise an Otoroshi::OneOfError
+# These examples raise an Otoroshi::OneOfError
 # with message: ":quantity contains elements that do not respect the assertion"
 Example.new(quantity: [1, -1])
 instance.quantity = [1, -1]
@@ -213,7 +219,7 @@ class Example
 instance = Example.new
 instance.message = nil
 
-# Those examples will raise an Otoroshi::WrontTypeError
+# Those examples raise an Otoroshi::WrontTypeError
 # with message: ":messages contains elements that are not instances of String"
 instance = Example.new(messages: [nil])
 instance.message = [nil]
