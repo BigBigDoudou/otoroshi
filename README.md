@@ -6,7 +6,7 @@
 
 Otoroshis are legendary creatures in Japanese folklore and mythology. They act as guardian of holy temples.
 
-The `otoroshi` gem helps you defining and validating class properties.
+The `otoroshi` gem helps you defining class properties.
 
 See [an example of refactor](#refactor-example) with Otoroshi.
 
@@ -24,19 +24,21 @@ $ bundle
 
 ## Usage
 
-Include `Otoroshi::Sanctuary` in a class to easily define arguments validation.
+Include `Otoroshi::Sanctuary` in the class.
 
 ```ruby
 require 'otoroshi'
 
 class MyClass
   include Otoroshi::Sanctuary
+
+  # ...
 end
 ```
 
-### Define class's properties
+### Defining properties
 
-The `::property(name, type, options)` method add a property.
+Use `::property(name, type, options)` to add a property.
 
 * `name`: name of the property (symbol or string)
 * `type`: the class the future value should belongs to (class or array of classes, `Object` by default)
@@ -47,7 +49,19 @@ The `::property(name, type, options)` method add a property.
   * `allow_nil`: define if the future value can be set to nil (boolean, `false` by default)
   * `default`: the default value for this property (should match the required type, `nil` by default)
 
-Getters and a setters are automatically set.
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :quantity, Integer, assert: ->(v) { v >= 0 }, default: 0
+  property :message, String, allow_nil: true
+  property :fruits, [Symbol], one_of: [:apple, :pear], default: []
+end
+```
+
+### Getters, setters and initialize
+
+Getters, setters and initialize methods are automatically defined.
 
 ```ruby
 class Example
@@ -66,22 +80,26 @@ instance.fruits # [:apple, :pear]
 
 instance.quantity = 7
 instance.message = 'world'
-instance.fruits # [:apple, :pear, :banana]
+instance.fruits = [:apple, :pear, :banana]
 
 instance.quantity # 7
 instance.message # world
 instance.fruits # [:apple, :pear, :banana]
 ```
 
-Variables are protected so they cannot be mutated.
+The getters return protected values which cannot be mutated.
 
 ```ruby
-# # Those examples raise a FrozenError
+# # These examples raise a FrozenError
 instance.message.upcase!
 instance.fruits << :coconut
 ```
 
-Validations run on initialization and assignment, starting by a type check.
+The `initialize` method and the setters run validations before assigning values.
+
+### Defining the validations
+
+Use the second argument of `::property` to define the expected type.
 
 ```ruby
 class Example
@@ -90,7 +108,10 @@ class Example
   property :quantity, Integer
 end
 
-# Those examples raise an Otoroshi::WrontTypeError
+# This example won't raise any error
+Example.new(quantity: 42)
+
+# These examples raise an Otoroshi::WrontTypeError
 # with message: ":quantity is not an instance of Integer"
 Example.new
 Example.new(quantity: 1.5)
@@ -107,11 +128,35 @@ class Example
   property :thing # == property :thing, Object
 end
 
-# Those examples won't raise any error
+# These examples won't raise any error
 Example.new
 Example.new(thing: 'hello')
-Example.new(thing: 42)
 Example.new(thing: [1, 2, 3])
+```
+
+If type is an array containing a class, e.g. `[Integer]`, each element is validated.
+
+```ruby
+class Example
+  include Otoroshi::Sanctuary
+
+  property :quantities, [Integer]
+end
+
+# Those examples won't raise any error
+Example.new(quantities: [])
+Example.new(quantities: [1, 2, 3])
+
+# These examples raise an Otoroshi::ArrayError
+# with message: ":quantities is not an array"
+Example.new
+Example.new(quantities: 42)
+
+# These examples raise an Otoroshi::WrontTypeError
+# with message: ":quantities contains elements that are not instances of Integer"
+Example.new
+Example.new(quantities: [1, 1.5])
+Example.new(quantities: [1, nil])
 ```
 
 If type is `[]` or `Array`, each element are treated as `Object`.
@@ -123,14 +168,17 @@ class Example
   property :things, [] # == property :things, [Object]
 end
 
+# These examples raise an Otoroshi::ArrayError
+# with message: ":things is not an array"
+Example.new
+Example.new(things: 42)
+
 # These examples won't raise any error
 Example.new
-Example.new(things: ['a', 'b', 'c'])
-Example.new(things: [1, 2, 3])
-Example.new(things: [[], []])
+Example.new(things: ['string', :symbol, 42])
 ```
 
-The `one_of` option limits the accepted values.
+Use the `one_of` option to limit the accepted values.
 
 ```ruby
 class Example
@@ -139,13 +187,16 @@ class Example
   property :eatable, one_of: [true, false]
 end
 
+# These examples won't raise any error
+Example.new(eatable: true)
+Example.new(eatable: false)
+
 # These examples raise an Otoroshi::OneOfError
 # with message: "eatable is not in [true, false]"
 Example.new(eatable: 'maybe')
-instance.eatable = 'maybe'
 ```
 
-If property is an array, the `one_of` is applied to each element.
+If property is an array, `one_of` is applied to each element.
 
 ```ruby
 class Example
@@ -154,13 +205,15 @@ class Example
   property :fruits, [], one_of: [:apple, :pear]
 end
 
-# These examples raise an Otoroshi::OneOfError
+# This example won't raise any error
+Example.new(fruits: [:pear, :apple])
+
+# This example raises an Otoroshi::OneOfError
 # with message: ":fruits contains elements that are not in [:apple, :pear]"
 Example.new(fruits: [:apple, :banana])
-instance.fruit = [:apple, :banana]
 ```
 
-The `assert` option adds a specific lambda validation:
+Use the `assert` option to add a specific lambda validation:
 
 ```ruby
 class Example
@@ -169,10 +222,12 @@ class Example
   property :quantity, Integer, assert: ->(v) { v > 0 }
 end
 
-# These examples raise an Otoroshi::AssertError
+# This example won't raise any error
+Example.new(quantity: 1)
+
+# This example raises an Otoroshi::AssertError
 # with message: ":quantity does not respect the assertion"
 Example.new(quantity: -1)
-instance.quantity = -1
 ```
 
 If property is an array, the `assert` is applied to each element.
@@ -184,48 +239,49 @@ class Example
   property :quantities, [Integer], assert: ->(v) { v > 0 }
 end
 
-# These examples raise an Otoroshi::OneOfError
-# with message: ":quantity contains elements that do not respect the assertion"
-Example.new(quantity: [1, -1])
-instance.quantity = [1, -1]
+# This example won't raise any error
+Example.new(quantities: [1, 2, 3])
+
+# This example raises an Otoroshi::OneOfError
+# with message: ":quantities contains elements that do not respect the assertion"
+Example.new(quantities: [1, -1])
 ```
 
-The `allow_nil` option will define if `nil` is accepted as a value (default to `false`).
+Set the `allow_nil` option to `true` if `nil` is accepted (default to `false`).
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
   property :message, String, allow_nil: true
+end
 
-
-# Those examples won't raise any error
-instance = Example.new
-instance.message = nil
+# These examples won't raise any error
+Example.new
+Example.new(message: nil)
 ```
 
-If property is an array, the `allow_nil` concerns the value itself, not the elements.
+If property is an array, it concerns the value itself, not each element.
 
 ```ruby
 class Example
   include Otoroshi::Sanctuary
 
   property :messages, [String], allow_nil: true
+end
 
+# These examples won't raise any error
+Example.new
+Example.new(message: nil)
 
-# Those examples won't raise any error
-instance = Example.new
-instance.message = nil
-
-# Those examples raise an Otoroshi::WrontTypeError
+# This example raises an Otoroshi::WrontTypeError
 # with message: ":messages contains elements that are not instances of String"
-instance = Example.new(messages: [nil])
-instance.message = [nil]
+Example.new(messages: ['hello', nil])
 ```
 
-The `default` option permits to define a default value, only on initialization if the key is not passed.
+Use the `default` option to set a default value (only on initialization if the key is not present).
 
-In case property is an array, it applies on the value itself, not on each element.
+If property is an array, it concerns the value itself, not on each element.
 
 ```ruby
 class Example
