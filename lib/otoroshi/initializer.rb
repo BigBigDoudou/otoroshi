@@ -80,7 +80,6 @@ module Otoroshi
     #   ""
     def default_parameter_for(options)
       default, allow_nil = options.values_at(:default, :allow_nil)
-      return " #{default.call}" if default.is_a? Proc
       return ' nil' if default.nil? && allow_nil
       return '' if default.nil? && !allow_nil
 

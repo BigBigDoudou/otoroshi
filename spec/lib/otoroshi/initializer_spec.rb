@@ -34,13 +34,6 @@ describe Otoroshi::Initializer do
           expect(described_class.draw(properties)).to include "time: \"#{timestamp}\""
         end
       end
-
-      context 'when default is a proc' do
-        it 'set the default to the proc result' do
-          properties = { time: { type: Time, default: -> { 'Time.now' } } }
-          expect(described_class.draw(properties)).to include 'time: Time.now'
-        end
-      end
     end
   end
 end

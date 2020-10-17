@@ -294,11 +294,42 @@ describe Otoroshi::Sanctuary do
   describe 'dynamic default' do
     context 'when default is a dynamic value' do
       it 'does not actualize the value' do
-        monkey.property(:time, default: -> { 'Time.now' })
-        instance_a =  monkey.new
-        instance_b =  monkey.new
-        expect(instance_b.time).to be > instance_a.time
+        monkey.property(:time, default: Time.now)
+        instance_a = monkey.new
+        instance_b = monkey.new
+        expect(instance_b.time).to eq instance_a.time
       end
+    end
+  end
+
+  context 'when initialize is overrided' do
+    before do
+      monkey.property(:number, Integer, assert: ->(v) { v >= 0 }, default: 0)
+      monkey.property(:message, String, allow_nil: true, default: '')
+      monkey.property(:thing, allow_nil: false)
+      monkey.define_method(:initialize) do |number: 42, message: nil, thing: nil|
+        self.number = number
+        self.message = message
+        self.thing = thing
+      end
+    end
+
+    let(:instance) { monkey.new }
+
+    it 'overrides the default value' do
+      expect(instance.number).to eq 42
+    end
+
+    it 'overrides default with nil' do
+      expect(instance.message).to be_nil
+    end
+
+    it 'overrides falsy allow_nil with nil' do
+      expect(instance.thing).to be_nil
+    end
+
+    it 'run validations' do
+      expect { instance.number = -1 }.to raise_error Otoroshi::Error
     end
   end
 end
