@@ -290,5 +290,16 @@ describe Otoroshi::Sanctuary do
         .to change(instance, :messages).from(['alfa', 'bravo', 'charlie']).to(['delta', 'echo', 'foxtrot'])
     end
   end
+
+  describe 'dynamic default' do
+    context 'when default is a dynamic value' do
+      it 'does not actualize the value' do
+        monkey.property(:time, default: -> { 'Time.now' })
+        instance_a =  monkey.new
+        instance_b =  monkey.new
+        expect(instance_b.time).to be > instance_a.time
+      end
+    end
+  end
 end
 # rubocop:enable Style/SymbolArray, Style/WordArray

@@ -80,11 +80,11 @@ module Otoroshi
     #   ""
     def default_parameter_for(options)
       default, allow_nil = options.values_at(:default, :allow_nil)
-      if default.nil?
-        allow_nil ? ' nil' : ''
-      else
-        " #{prefix(default)}#{default}#{suffix(default)}"
-      end
+      return " #{default.call}" if default.is_a? Proc
+      return ' nil' if default.nil? && allow_nil
+      return '' if default.nil? && !allow_nil
+
+      " #{prefix(default)}#{default}#{suffix(default)}"
     end
 
     # Generates the characters to put before the value
@@ -94,6 +94,7 @@ module Otoroshi
       case default
       when Symbol then ':'
       when String then '"'
+      when Time, Date, DateTime then '"'
       end
     end
 
@@ -102,6 +103,7 @@ module Otoroshi
     def suffix(default)
       case default
       when String then '"'
+      when Time, Date, DateTime then '"'
       end
     end
 

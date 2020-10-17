@@ -59,8 +59,6 @@ class Example
 end
 ```
 
-### Getters, setters and initialize
-
 Getters, setters and initialize methods are automatically defined.
 
 ```ruby
@@ -97,7 +95,7 @@ instance.fruits << :coconut
 
 The `initialize` method and the setters run validations before assigning values.
 
-### Defining the validations
+### Adding validations
 
 Use the second argument of `::property` to define the expected type.
 
@@ -298,6 +296,48 @@ instance.quantity # nil
 
 instance.quantity = nil
 instance.quantity # nil
+```
+
+Be careful, the default value is interpreted at the moment the `#initialize` method is defined.
+
+If you set `default` to `Time.now`, this will be interpreted so the generated initialize method contains the interpreted value:
+
+```ruby
+property :timestamp, Time, default: Time.now
+
+# automaticcally generated
+def initialize(timestamp: '2020-10-17 15:02:01 +0200')
+  self.timestamp = @timestamp
+end
+```
+
+If you need the default value to be reinterpreted each time, you have two solutions.
+
+Either you use a proc and indicate the code as string:
+
+```ruby
+property :timestamp, Time, default: -> { 'Time.now' }
+
+# automaticcally generated
+def initialize(timestamp: Time.now)
+  self.timestamp = @timestamp
+end
+```
+
+Either you override the initialize method (and keep only the advantage of getter, setter and validations):
+
+```ruby
+property :timestamp, Time
+
+# automaticcally generated
+def initialize(timestamp: '2020-10-17 15:02:01 +0200')
+  self.timestamp = @timestamp
+end
+
+# manually overrided
+def initialize(timestamp: Time.now)
+  self.timestamp = @timestamp
+end
 ```
 
 ## Refactor Example
