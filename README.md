@@ -311,9 +311,9 @@ def initialize(timestamp: '2020-10-17 15:02:01 +0200')
 end
 ```
 
-We advise to avoid calculated value as default.
+We advise to avoid default values depending on external classes.
 
-You can still override the initialize method (and keep only the advantage of getter, setter and validations):
+However, you can override the initialize method (and keep the advantage of getter, setter and validations):
 
 ```ruby
 property :timestamp, Time, default: Time.now
