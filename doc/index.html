@@ -130,16 +130,21 @@
 </span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='int'>7</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>world</span><span class='tstring_end'>&#39;</span></span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:banana</span>
-
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='comment'># [:apple, :pear, :banana]
+</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='comment'># 7
 </span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span> <span class='comment'># world
 </span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='comment'># [:apple, :pear, :banana]
 </span></code></pre>
 
-<p>Validations run on initialization and assignment, starting by a type check.</p>
+<p>Variables are protected so they cannot be mutated.</p>
 
-<p>For arrays property, use the <code>&lt;&lt;</code> to run validations on the pushed value. If for whatever reason you do not want the validations to run, use <code>#push</code>.</p>
+<pre class="code ruby"><code class="ruby"><span class='comment'># # Those examples raise a FrozenError
+</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_upcase!'>upcase!</span>
+<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruits'>fruits</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:coconut</span>
+</code></pre>
+
+<p>Validations run on initialization and assignment, starting by a type check.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='kw'>class</span> <span class='const'>Example</span>
   <span class='id identifier rubyid_include'>include</span> <span class='const'><span class='object_link'><a href="Otoroshi.html" title="Otoroshi (module)">Otoroshi</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Otoroshi/Sanctuary.html" title="Otoroshi::Sanctuary (module)">Sanctuary</a></span></span>
@@ -147,7 +152,7 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span>
 <span class='kw'>end</span>
 
-<span class='comment'># Those examples will raise an Otoroshi::WrontTypeError
+<span class='comment'># Those examples raise an Otoroshi::WrontTypeError
 </span><span class='comment'># with message: &quot;:quantity is not an instance of Integer&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 <span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='float'>1.5</span><span class='rparen'>)</span>
@@ -193,7 +198,7 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:eatable</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='kw'>true</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::OneOfError
+<span class='comment'># These examples raise an Otoroshi::OneOfError
 </span><span class='comment'># with message: &quot;eatable is not in [true, false]&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>eatable:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maybe</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_eatable'>eatable</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maybe</span><span class='tstring_end'>&#39;</span></span>
@@ -207,11 +212,10 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:fruits</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>one_of:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:pear</span><span class='rbracket'>]</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::OneOfError
+<span class='comment'># These examples raise an Otoroshi::OneOfError
 </span><span class='comment'># with message: &quot;:fruits contains elements that are not in [:apple, :pear]&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>fruits:</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:banana</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruit'>fruit</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='symbol'>:apple</span><span class='comma'>,</span> <span class='symbol'>:banana</span><span class='rbracket'>]</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_fruit'>fruit</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:banana</span>
 </code></pre>
 
 <p>The <code>assert</code> option adds a specific lambda validation:</p>
@@ -222,7 +226,7 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantity</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::AssertError
+<span class='comment'># These examples raise an Otoroshi::AssertError
 </span><span class='comment'># with message: &quot;:quantity does not respect the assertion&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='op'>-</span><span class='int'>1</span>
@@ -236,11 +240,10 @@
   <span class='id identifier rubyid_property'>property</span> <span class='symbol'>:quantities</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Integer</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>assert:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_v'>v</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_v'>v</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span>
 
-<span class='comment'># These examples will raise an Otoroshi::OneOfError
+<span class='comment'># These examples raise an Otoroshi::OneOfError
 </span><span class='comment'># with message: &quot;:quantity contains elements that do not respect the assertion&quot;
 </span><span class='const'>Example</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>quantity:</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
-<span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_quantity'>quantity</span> <span class='op'>&lt;&lt;</span> <span class='op'>-</span><span class='int'>1</span>
 </code></pre>
 
 <p>The <code>allow_nil</code> option will define if <code>nil</code> is accepted as a value (default to <code>false</code>).</p>
@@ -268,7 +271,7 @@ instance.message = nil
 instance = Example.new
 instance.message = nil
 
-# Those examples will raise an Otoroshi::WrontTypeError
+# Those examples raise an Otoroshi::WrontTypeError
 # with message: &quot;:messages contains elements that are not instances of String&quot;
 instance = Example.new(messages: [nil])
 instance.message = [nil]
@@ -372,7 +375,7 @@ instance.message = [nil]
 </div></div>
 
       <div id="footer">
-  Generated on Fri Oct 16 22:46:36 2020 by
+  Generated on Sat Oct 17 11:01:54 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.6).
 </div>
