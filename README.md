@@ -158,7 +158,6 @@ end
 # with message: ":fruits contains elements that are not in [:apple, :pear]"
 Example.new(fruits: [:apple, :banana])
 instance.fruit = [:apple, :banana]
-instance.fruit << :banana
 ```
 
 The `assert` option adds a specific lambda validation:
@@ -189,7 +188,6 @@ end
 # with message: ":quantity contains elements that do not respect the assertion"
 Example.new(quantity: [1, -1])
 instance.quantity = [1, -1]
-instance.quantity << -1
 ```
 
 The `allow_nil` option will define if `nil` is accepted as a value (default to `false`).
